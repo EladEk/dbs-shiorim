@@ -1,0 +1,43 @@
+/* Classes.css */
+
+.class-title {
+  text-align: center;
+  align-items: center;
+  font-size: 300%;
+  background-color: #4CAF50;
+  color: black;
+  margin: 0;
+  padding: 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.title {
+  text-align: center;
+  align-items: center;
+  font-size: 500%;
+}
+
+.fade {
+  transition: opacity 0.5s ease-in-out; /* Adjust duration as needed */
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+.sidebar-main {
+  background-color: tomato;
+}
+
+.class-name {
+  background-color: rgb(41, 73, 73);
+}
+
+.teacher-name {
+  background-color: rgb(21, 36, 36);
+}

@@ -1,0 +1,73 @@
+/* Flexbox layout for table and sidebar */
+.app-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  text-align: right;
+  direction: rtl;
+  background-color: darkcyan;
+}
+
+.content {
+  width: 70%; /* Adjust based on your layout preference */
+}
+
+.sidebar {
+  width: 30%; /* Adjust based on your layout preference */
+  margin-left: 20px; /* Space between the table and sidebar */
+  background-color: palegoldenrod;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right; /* Align text to the right */
+  direction: rtl; /* Set the table to follow RTL direction */
+  background-color: #f9f9f9; /* Light background */
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 100%;
+}
+
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px; /* Reduce padding to minimize cell size */
+  text-align: right !important; /* Force text to align right */
+  direction: rtl !important; /* Ensure right-to-left text direction */
+  white-space: nowrap; /* Prevent text wrapping */
+  font-size: 1.4em; /* Set a reasonable font size */
+  max-width: 1px; /* Allow cells to shrink to the size of the text */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Highlight and active state styling */
+.highlight {
+  background-color: tomato; /* Softer highlight */
+  color: white;
+}
+
+.active {
+  font-weight: bold;
+  background-color: black; /* Or any other stronger highlight color */
+  color: wheat;
+  font-style: bold;
+}
+
+.time-day-display {
+  text-align: center;
+  font-size: 3em;
+  margin-bottom: 20px;
+  color: red;
+}
