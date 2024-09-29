@@ -61,13 +61,13 @@ function App() {
   const getTodayDayNameInHebrew = () => {
     const today = new Date();
     const options = { weekday: 'long' };
-    return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
-    //return "שלישי"
+    //return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
+    return "שלישי"
   };
 
   const isTimeInRange = (startTime, endTime) => {
-    const timeToCheck = currentTime; // Use the updated current time or the debug time
-    //const timeToCheck = "09:20"
+    //const timeToCheck = currentTime; // Use the updated current time or the debug time
+    const timeToCheck = "09:20"
     return timeToCheck >= startTime && timeToCheck <= endTime;
   };
 
