@@ -1,4 +1,5 @@
 /* Flexbox layout for table and sidebar */
+
 .app-container {
   display: flex;
   justify-content: space-between;
@@ -16,8 +17,8 @@
   flex-basis: 30%; /* Set a base width */
   flex-shrink: 0; /* Prevent shrinking */
   margin-right: 20px;
-  background-color: palegoldenrod;
-
+  padding: 0; /* Remove padding */
+  margin-bottom: 10px;
 }
 
 /* Table styling */
@@ -79,10 +80,28 @@ tr:nth-child(even) {
   color: wheat;
 }
 
-.time-day-display {
+.day-display {
   text-align: center;
-  margin-bottom: 20px;
   color: red;
+  font-size: 200%;
+  background-color: palegoldenrod;
+  margin: 0; /* Remove extra margin */
+  padding: 5px; /* Adjust padding */
+}
+
+.time-display {
+  text-align: center;
+  color: navy;
+  font-size: 300%;
+  margin: 0; /* Remove margin */
+  padding: 5px; /* Adjust padding */
+  font-weight: bold;
+  background-color: palegoldenrod;
+}
+
+.day-display h1, .time-display h1 {
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
 }
 
 /* --- Responsive Design --- */
@@ -138,6 +157,10 @@ tr:nth-child(even) {
   th.highlight, td.highlight {
     display: table-cell; /* Only show the highlighted day column */
   }
+
+  .day-display {
+    font-size: 200%;
+  }
 }
 
 /* For mobile phones (screens smaller than 480px) */
@@ -146,8 +169,8 @@ tr:nth-child(even) {
     padding: 5px;
   }
 
-  .time-day-display {
-    font-size: 1.5em; /* Reduce the size of the day/time display */
+  .day-display {
+    font-size: 200%;
   }
 
   th, td {
@@ -163,4 +186,14 @@ tr:nth-child(even) {
     width: 100%; /* Full width for both content and sidebar */
     margin-right: 0;
   }
+}
+
+.blinking-colon {
+  animation: blink 2.5s infinite; /* Blinking effect every second */
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }

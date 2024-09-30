@@ -13,34 +13,49 @@
 }
 
 .sidebar {
-  width: 30%; /* Adjust based on your layout preference */
-  margin-left: 20px; /* Space between the table and sidebar */
+  flex-basis: 30%; /* Set a base width */
+  flex-shrink: 0; /* Prevent shrinking */
+  margin-right: 20px;
   background-color: palegoldenrod;
+
 }
 
 /* Table styling */
 table {
-  width: 100%;
   border-collapse: collapse;
   text-align: right; /* Align text to the right */
   direction: rtl; /* Set the table to follow RTL direction */
   background-color: #f9f9f9; /* Light background */
   border-radius: 5px;
-  overflow: hidden;
-  font-size: 100%;
+  width: 100%;
+  table-layout: auto; /* Allow cells to shrink */
 }
 
+/* Specific styling for the time column */
+.time-column-header {
+  background-color: #096e47;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  width: 80px; /* Set width for header */
+}
 
+.time-column {
+  background-color: #40f09e; /* Light yellow background */
+  color: #333; /* Dark text color */
+  font-weight: bold;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide any overflow */
+  text-overflow: ellipsis; /* Add ellipsis if the text overflows */
+}
+
+/* General table cell styling */
 th, td {
   border: 1px solid #ddd;
-  padding: 8px; /* Reduce padding to minimize cell size */
-  text-align: right !important; /* Force text to align right */
-  direction: rtl !important; /* Ensure right-to-left text direction */
-  white-space: nowrap; /* Prevent text wrapping */
-  font-size: 1.4em; /* Set a reasonable font size */
-  max-width: 1px; /* Allow cells to shrink to the size of the text */
-  overflow: hidden; /* Hide overflowing text */
-  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+  padding: 8px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 th {
@@ -54,20 +69,98 @@ tr:nth-child(even) {
 
 /* Highlight and active state styling */
 .highlight {
-  background-color: tomato; /* Softer highlight */
+  background-color: tomato;
   color: white;
 }
 
 .active {
   font-weight: bold;
-  background-color: black; /* Or any other stronger highlight color */
+  background-color: black;
   color: wheat;
-  font-style: bold;
 }
 
 .time-day-display {
   text-align: center;
-  font-size: 3em;
   margin-bottom: 20px;
   color: red;
+}
+
+/* --- Responsive Design --- */
+
+/* For tablets and mobile screens (screens smaller than 768px) */
+@media only screen and (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .content {
+    width: 100%; /* Full width for both content and sidebar */
+  }
+
+  .sidebar {
+    width: 100%; /* Full width for both content and sidebar */
+    margin-right: 0;
+    order: -1;
+  }
+
+  /* Table adjustments */
+  table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+
+  th, td {
+    font-size: 14px; /* Slightly smaller font for mobile */
+    padding: 6px; /* Reduce padding to fit more content */
+  }
+
+  /* Shrink the time column */
+  .time-column-header {
+    width: 60px;
+  }
+
+  .time-column {
+    width: 60px;
+  }
+
+  /* Hide all columns except the time column and the highlighted column */
+  th, td {
+    display: none; /* Hide all table columns initially */
+  }
+
+  th.time-column-header, td.time-column {
+    display: table-cell; /* Keep the time column visible */
+  }
+
+  /* Show only the highlighted column */
+  th.highlight, td.highlight {
+    display: table-cell; /* Only show the highlighted day column */
+  }
+}
+
+/* For mobile phones (screens smaller than 480px) */
+@media only screen and (max-width: 480px) {
+  .app-container {
+    padding: 5px;
+  }
+
+  .time-day-display {
+    font-size: 1.5em; /* Reduce the size of the day/time display */
+  }
+
+  th, td {
+    font-size: 12px; /* Further reduce the font size */
+    padding: 4px;
+  }
+
+  .time-column-header, .time-column {
+    width: 50px; /* Shrink time column more for mobile */
+  }
+
+  .sidebar {
+    width: 100%; /* Full width for both content and sidebar */
+    margin-right: 0;
+  }
 }

@@ -159,9 +159,14 @@ function App() {
           </table>
         </div>
         <div className="sidebar">
-          <div className="time-day-display">
-            <h1>{currentTime} - יום {currentDay}</h1>
+          <div className="day-display">
+            <h1>יום {currentDay}</h1>
           </div>
+            <div className="time-display">            
+              {currentTime.slice(0, 2)}
+              <span className="blinking-colon">:</span>
+              {currentTime.slice(3, 5)}
+            </div>
           {Array.isArray(currentClass) && <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC}/>}
         </div>
       </div>

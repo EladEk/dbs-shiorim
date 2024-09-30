@@ -15,7 +15,7 @@
 .title {
   text-align: center;
   align-items: center;
-  font-size: 500%;
+  font-size: 350%;
 }
 
 .fade {
@@ -40,4 +40,34 @@
 
 .teacher-name {
   background-color: rgb(21, 36, 36);
+}
+
+/* Mobile styles for the table inside Classes component only */
+@media (max-width: 768px) {
+  /* Target only tables inside the sidebar or specific to Classes */
+  .sidebar-main table {
+    width: 100%;
+    table-layout: fixed;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    display: block;
+    white-space: nowrap;
+  }
+
+  .sidebar-main th, .sidebar-main td {
+    font-size: 0.9rem; /* Decrease font size on mobile */
+    padding: 6px; /* Decrease padding */
+  }
+
+  /* Ensure that "כיתה", "מורה", and the first column are visible */
+  .sidebar-main th:nth-child(1), .sidebar-main td:nth-child(1),  /* First column (time column, זמנים) */
+  .sidebar-main th:nth-child(2), .sidebar-main td:nth-child(2),  /* Second column (כיתה) */
+  .sidebar-main th:nth-child(3), .sidebar-main td:nth-child(3) { /* Third column (מורה) */
+    display: table-cell;
+  }
+
+  /* Hide other columns to save space */
+  .sidebar-main th:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)),
+  .sidebar-main td:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)) {
+    display: none;
+  }
 }

@@ -10,12 +10,29 @@
   padding: 0;
   border-radius: 5px;
   border: 1px solid #ddd;
+  
 }
 
-.title {
+.top-section {
+  margin-bottom: 20px; /* Adjust this value to increase or decrease the space */
+}
+
+.title-active-class {
+  margin-top: 10px;
   text-align: center;
   align-items: center;
   font-size: 350%;
+}
+
+.title-time-frame {
+  text-align: center;
+  align-items: center;
+  font-size: 250%;
+  color: navy;
+  padding: 0; /* Remove default padding */
+  line-height: 0; /* Adjust line height for tighter spacing */
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .fade {
@@ -32,6 +49,7 @@
 
 .sidebar-main {
   background-color: tomato;
+  margin-bottom: 20px;
 }
 
 .class-name {

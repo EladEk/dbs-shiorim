@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './Classes.css';
 
-const Classes = ({ currentClass }) => {
+
+const Classes = ({ currentClass, firstActiveClassC }) => {
   const [sheetData, setSheetData] = useState({});
   const [error, setError] = useState(null);
   const [currentSheetIndex, setCurrentSheetIndex] = useState(0); // Track the current sheet being displayed
@@ -57,9 +58,14 @@ const Classes = ({ currentClass }) => {
 
   return (
     <div className='sidebar-main'>
-      <h1 className="title">שיעורים פעילים</h1>
-      {error && <p>{error}</p>}
 
+{firstActiveClassC ? (
+          <h1 className="title">שיעורים פעילים {firstActiveClassC }</h1>
+        ) : (
+          <h1 className="title">אין שיעורים פעילים</h1>
+        )}
+      
+      {error && <p>{error}</p>}
       {sheetKeys.length > 0 ? (
         <div
           key={currentSheetIndex}

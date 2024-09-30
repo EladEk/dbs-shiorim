@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './Classes.css';
 
-
 const Classes = ({ currentClass, firstActiveClassC }) => {
   const [sheetData, setSheetData] = useState({});
   const [error, setError] = useState(null);
@@ -57,49 +56,52 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
   const currentSheetKey = sheetKeys[currentSheetIndex]; // Get the current sheet being displayed
 
   return (
-    <div className='sidebar-main'>
-
-{firstActiveClassC ? (
-          <h1 className="title">שיעורים פעילים {firstActiveClassC }</h1>
-        ) : (
-          <h1 className="title">אין שיעורים פעילים</h1>
-        )}
-      
-      {error && <p>{error}</p>}
-      {sheetKeys.length > 0 ? (
-        <div
-          key={currentSheetIndex}
-          className={`fade ${isFading ? 'fade-out' : 'fade-in'}`} // Apply fade effect classes
-        >
-          <h2 className="class-title">{currentSheetKey}</h2>
-          <table>
-            <thead className='class-name'>
-                <tr>
-                {sheetData[currentSheetKey][0].map((header, colIndex) => (
-                  <th key={colIndex} className='class-name'>{header}</th>
-                ))}
-              </tr>
-              <tr>
-                {sheetData[currentSheetKey][1].map((header, colIndex) => (
-                  <th key={colIndex} className='teacher-name'>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sheetData[currentSheetKey].slice(2).map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((value, colIndex) => (
-                    <td key={colIndex}>{value}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p>לא נמצאו שיעורים פעילים</p>
-      )}
+<div className='sidebar-main'>
+  {firstActiveClassC ? (
+    <div className="top-section"> {/* Add this class */}
+      <h1 className="title-active-class">שיעורים פעילים</h1>
+      <h1 className="title-time-frame">{firstActiveClassC}</h1>
     </div>
+  ) : (
+    <h1 className="title">אין שיעורים פעילים</h1>
+  )}
+
+  {error && <p>{error}</p>}
+
+  {sheetKeys.length > 0 ? (
+    <div
+      key={currentSheetIndex}
+      className={`fade ${isFading ? 'fade-out' : 'fade-in'}`} // Apply fade effect classes
+    >
+      <h2 className="class-title">{currentSheetKey}</h2>
+      <table>
+        <thead className='class-name'>
+          <tr>
+            {sheetData[currentSheetKey][0].map((header, colIndex) => (
+              <th key={colIndex} className='class-name'>{header}</th>
+            ))}
+          </tr>
+          <tr>
+            {sheetData[currentSheetKey][1].map((header, colIndex) => (
+              <th key={colIndex} className='teacher-name'>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {sheetData[currentSheetKey].slice(2).map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((value, colIndex) => (
+                <td key={colIndex}>{value}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p>לא נמצאו שיעורים פעילים</p>
+  )}
+</div>
   );
 };
 
