@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './Classes.css';
 
+//Elad Eretz Kdosha
+
 const Classes = ({ currentClass }) => {
   const [sheetData, setSheetData] = useState({});
   const [error, setError] = useState(null);
