@@ -15,7 +15,7 @@
 .title {
   text-align: center;
   align-items: center;
-  font-size: 500%;
+  font-size: 350%;
 }
 
 .fade {
@@ -40,4 +40,44 @@
 
 .teacher-name {
   background-color: rgb(21, 36, 36);
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  /* Adjust the font size for smaller screens */
+  .class-title {
+    font-size: 100%;
+  }
+
+  .title {
+    font-size: 150%;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    display: block;
+    white-space: nowrap;
+  }
+
+  th, td {
+    font-size: 0.9rem; /* Decrease font size on mobile */
+    padding: 6px; /* Decrease padding */
+  }
+
+  /* Hide unnecessary columns, show only first column and highlighted columns */
+  .class-name, .teacher-name {
+    display: none;
+  }
+
+  /* Show only the first column and highlighted columns */
+  th:nth-child(1), td:nth-child(1), th.highlight, td.highlight {
+    display: table-cell;
+  }
+}
+
+/* Adjust the fade effect */
+.fade {
+  transition: opacity 0.5s ease-in-out;
 }
