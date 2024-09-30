@@ -61,12 +61,10 @@ function App() {
     const today = new Date();
     const options = { weekday: 'long' };
     return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
-    //return "חמישי"
   };
 
   const isTimeInRange = (startTime, endTime) => {
     const timeToCheck = currentTime; // Use the updated current time or the debug time
-    //const timeToCheck = "09:20";
     return timeToCheck >= startTime && timeToCheck <= endTime;
   };
 
@@ -108,38 +106,37 @@ function App() {
       <Banner />
       <div className="app-container">
         <div className="content">
-          <table className='to-the-right'>
+          <table className="to-the-right">
             <thead>
               <tr>
-              <th className="time-column-header">זמנים</th> {/* Special class for זמנים */}
-                {/* Slice starting from column 2 (C) but display headers from that index */}
-                {data.length > 0 && data[0].slice(3).map((header, colIndex) => (
-                  <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlight' : ''}>
-                    {header}
-                  </th>
-                ))}
+                <th className="time-column-header">זמנים</th>
+                {data.length > 0 &&
+                  data[0]
+                    .slice(3)
+                    .map((header, colIndex) => (
+                      <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlight' : ''}>
+                        {header}
+                      </th>
+                    ))}
               </tr>
             </thead>
             <tbody>
               {data.slice(1).map((row, rowIndex) => {
                 const startTime = row[0] ? convertExcelTimeToHHMM(row[0]) : ''; // Convert Excel start time
-                const endTime = row[1] ? convertExcelTimeToHHMM(row[1]) : '';   // Convert Excel end time
+                const endTime = row[1] ? convertExcelTimeToHHMM(row[1]) : ''; // Convert Excel end time
                 return (
                   <tr key={rowIndex}>
-                    {/* Slice the row data from index 2 to skip A and B */}
-                    {row.slice(2).map((value, colIndex) => {
-                      const isHighlighted = highlightColumns.includes(colIndex + 2);
+                    <td className="time-column">
+                      {row[2]}
+                    </td>
+                    {row.slice(3).map((value, colIndex) => {
+                      const isHighlighted = highlightColumns.includes(colIndex + 3);
                       const isCurrentTimeInRange = isTimeInRange(startTime, endTime);
-
                       const cellClass = `${isHighlighted ? 'highlight' : ''} ${isHighlighted && isCurrentTimeInRange ? 'active' : ''}`;
 
                       return (
-                        <td key={colIndex + 2} className={cellClass}>
-                          {typeof value === 'undefined' || value === null || value === '' ? (
-                            '\u00A0' // Render non-breaking space for empty cells
-                          ) : (
-                            value.trim()
-                          )}
+                        <td key={colIndex + 3} className={cellClass}>
+                          {typeof value === 'undefined' || value === null || value === '' ? '\u00A0' : value.trim()}
                         </td>
                       );
                     })}
@@ -149,7 +146,6 @@ function App() {
             </tbody>
           </table>
         </div>
-
         <div className="sidebar" style={{ marginRight: '20px' }}>
           <div className="time-day-display">
             <h1>{currentTime} - יום {currentDay}</h1>
