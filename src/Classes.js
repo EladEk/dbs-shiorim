@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import './Classes.css';
 
+
 const Classes = ({ currentClass, firstActiveClassC }) => {
   const [sheetData, setSheetData] = useState({});
   const [error, setError] = useState(null);
