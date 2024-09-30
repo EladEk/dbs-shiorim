@@ -10,7 +10,20 @@ function App() {
   const [currentClass, setCurrentClass] = useState([]);
   const [currentTime, setCurrentTime] = useState(""); // State for current time
   const [currentDay, setCurrentDay] = useState("");  // State for current day in Hebrew
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+  
+    window.addEventListener('resize', handleResize);
+  
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
   useEffect(() => {
     fetch('/excel/database.xlsx')
       .then(response => response.arrayBuffer())

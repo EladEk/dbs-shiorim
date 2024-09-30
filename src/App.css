@@ -82,3 +82,72 @@ tr:nth-child(even) {
   margin-bottom: 20px;
   color: red;
 }
+
+/* --- Responsive Design --- */
+
+/* For tablets and mobile screens (screens smaller than 768px) */
+@media only screen and (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .content, .sidebar {
+    width: 100%; /* Full width for both content and sidebar */
+  }
+
+  /* Table adjustments */
+  table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+
+  th, td {
+    font-size: 14px; /* Slightly smaller font for mobile */
+    padding: 6px; /* Reduce padding to fit more content */
+  }
+
+  /* Shrink the time column */
+  .time-column-header {
+    width: 60px;
+  }
+
+  .time-column {
+    width: 60px;
+  }
+
+  /* Hide all columns except the time column and the highlighted column */
+  th, td {
+    display: none; /* Hide all table columns initially */
+  }
+
+  th.time-column-header, td.time-column {
+    display: table-cell; /* Keep the time column visible */
+  }
+
+  /* Show only the highlighted column */
+  th.highlight, td.highlight {
+    display: table-cell; /* Only show the highlighted day column */
+  }
+}
+
+/* For mobile phones (screens smaller than 480px) */
+@media only screen and (max-width: 480px) {
+  .app-container {
+    padding: 5px;
+  }
+
+  .time-day-display {
+    font-size: 1.5em; /* Reduce the size of the day/time display */
+  }
+
+  th, td {
+    font-size: 12px; /* Further reduce the font size */
+    padding: 4px;
+  }
+
+  .time-column-header, .time-column {
+    width: 50px; /* Shrink time column more for mobile */
+  }
+}
