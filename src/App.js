@@ -7,44 +7,40 @@ import Banner from './Banner';
 function App() {
   const [data, setData] = useState([]);
   const [highlightColumns, setHighlightColumns] = useState([]);
-  const [currentClass, setCurrentClass] = useState([]);
-  const [currentTime, setCurrentTime] = useState(""); // State for current time
-  const [currentDay, setCurrentDay] = useState("");  // State for current day in Hebrew
-  const deBug = 1; 
+  const [currentClass, setCurrentClass] = useState([]); // Active classes to pass to Classes component
+  const [currentTime, setCurrentTime] = useState(""); 
+  const [currentDay, setCurrentDay] = useState("");  
+  const [firstActiveClassC, setFirstActiveClassC] = useState(""); // Store the first non-empty column C value
+  const deBug = 0;
 
   useEffect(() => {
     fetch('/excel/database.xlsx')
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheetName = 'Main'; // The specific sheet you are working with
+        const sheetName = 'Main'; 
         const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' }); // Use non-breaking space for empty cells
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' });
         setData(jsonData);
-        checkHighlightColumns(jsonData); // Existing logic to check highlight columns
+        checkHighlightColumns(jsonData); 
       })
       .catch(err => console.error("Error fetching or reading Excel file:", err));
   }, []);
 
   useEffect(() => {
-    // Set the initial time and day
     updateCurrentTime();
-
-    // Set up an interval to update the current time every minute (60000 ms)
     const interval = setInterval(() => {
       updateCurrentTime();
     }, 10000);
-
-    // Clear the interval when the component unmounts
     return () => clearInterval(interval);
   }, []);
 
   const updateCurrentTime = () => {
     const now = new Date();
-    const currentFormattedTime = now.toTimeString().slice(0, 5); // Get HH:mm format
-    const todayDayInHebrew = getTodayDayNameInHebrew(); // Get today's day in Hebrew
-    setCurrentTime(currentFormattedTime); // Update the current time state
-    setCurrentDay(todayDayInHebrew); // Update the current day state
+    const currentFormattedTime = now.toTimeString().slice(0, 5); 
+    const todayDayInHebrew = getTodayDayNameInHebrew(); 
+    setCurrentTime(currentFormattedTime); 
+    setCurrentDay(todayDayInHebrew); 
   };
 
   const checkHighlightColumns = (data) => {
@@ -64,30 +60,29 @@ function App() {
     if (deBug === 0) {
       return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
     } else {
-      return 'חמישי'; // Return 'חמישי' when deBug is not 0
+      return 'חמישי'; 
     }
   };
 
   const isTimeInRange = (startTime, endTime) => {
-    const timeToCheck = currentTime; // Use the updated current time or the debug time
+    const timeToCheck = currentTime; 
     if (deBug === 0) {
       return timeToCheck >= startTime && timeToCheck <= endTime;
     } else {
       return "09:20" >= startTime && "09:20" <= endTime;
     }
-    
-    
   };
 
   const convertExcelTimeToHHMM = (excelTime) => {
-    const totalMinutes = Math.round(excelTime * 24 * 60); // Convert Excel time to total minutes
+    const totalMinutes = Math.round(excelTime * 24 * 60); 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Format as HH:mm
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; 
   };
 
   useEffect(() => {
     const filteredRows = [];
+    let foundFirstActiveClassC = false; // Track if the first active column C has been found
 
     data.slice(1).forEach((row) => {
       const startTime = row[0] ? convertExcelTimeToHHMM(row[0]) : '';
@@ -103,6 +98,12 @@ function App() {
           });
         }
       });
+
+      // If the time is in range, column C (index 2) is not empty or '\u00A0', and we haven't found a match yet
+      if (isCurrentTimeInRange && !foundFirstActiveClassC && row[2] && row[2].trim() !== '\u00A0') {
+        setFirstActiveClassC(row[2].trim()); // Save the first non-empty value from column C
+        foundFirstActiveClassC = true; // Mark that we've found the first value
+      }
     });
 
     if (filteredRows.length > 0) {
@@ -133,8 +134,8 @@ function App() {
             </thead>
             <tbody>
               {data.slice(1).map((row, rowIndex) => {
-                const startTime = row[0] ? convertExcelTimeToHHMM(row[0]) : ''; // Convert Excel start time
-                const endTime = row[1] ? convertExcelTimeToHHMM(row[1]) : ''; // Convert Excel end time
+                const startTime = row[0] ? convertExcelTimeToHHMM(row[0]) : ''; 
+                const endTime = row[1] ? convertExcelTimeToHHMM(row[1]) : ''; 
                 return (
                   <tr key={rowIndex}>
                     <td className="time-column">
@@ -161,7 +162,7 @@ function App() {
           <div className="time-day-display">
             <h1>{currentTime} - יום {currentDay}</h1>
           </div>
-          {Array.isArray(currentClass) && <Classes currentClass={currentClass.map(item => item.className)} />}
+          {Array.isArray(currentClass) && <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC}/>}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@
   color: white;
   font-size: 50px;
   z-index: 1000;
+  text-align: center; /* Center text horizontally */
   transition: opacity 1s ease-in-out;
 }
 
@@ -21,4 +22,19 @@
 
 .banner.visible {
   opacity: 1;
+}
+
+/* Mobile support */
+@media (max-width: 768px) {
+  .banner {
+    font-size: 30px; /* Smaller font size for mobile screens */
+    text-align: center; /* Ensure text is centered on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .banner {
+    font-size: 20px; /* Even smaller font size for very small screens */
+    text-align: center; /* Center text on smaller screens as well */
+  }
 }
