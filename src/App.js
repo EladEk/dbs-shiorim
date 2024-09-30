@@ -11,7 +11,7 @@ function App() {
   const [currentTime, setCurrentTime] = useState(""); 
   const [currentDay, setCurrentDay] = useState("");  
   const [firstActiveClassC, setFirstActiveClassC] = useState(""); // Store the first non-empty column C value
-  const deBug = 1;
+  const deBug = 0;
 
   useEffect(() => {
     fetch('/excel/database.xlsx')
