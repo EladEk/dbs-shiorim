@@ -4,7 +4,6 @@ import './App.css'; // Assuming styles will be added here
 import Classes from './Classes'; // Import the Classes component
 import Banner from './Banner';
 
-
 function App() {
   const [data, setData] = useState([]);
   const [highlightColumns, setHighlightColumns] = useState([]);
@@ -21,7 +20,7 @@ function App() {
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' }); // Use non-breaking space for empty cells
         setData(jsonData);
-        checkHighlightColumns(jsonData);
+        checkHighlightColumns(jsonData); // Existing logic to check highlight columns
       })
       .catch(err => console.error("Error fetching or reading Excel file:", err));
   }, []);
@@ -33,7 +32,7 @@ function App() {
     // Set up an interval to update the current time every minute (60000 ms)
     const interval = setInterval(() => {
       updateCurrentTime();
-    },10000);
+    }, 10000);
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
@@ -62,12 +61,12 @@ function App() {
     const today = new Date();
     const options = { weekday: 'long' };
     //return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
-    return "שלישי"
+    return "חמישי"
   };
 
   const isTimeInRange = (startTime, endTime) => {
     //const timeToCheck = currentTime; // Use the updated current time or the debug time
-    const timeToCheck = "09:20"
+    const timeToCheck = "09:20";
     return timeToCheck >= startTime && timeToCheck <= endTime;
   };
 
@@ -112,8 +111,10 @@ function App() {
           <table className='to-the-right'>
             <thead>
               <tr>
-                {data.length > 0 && data[0].map((header, colIndex) => (
-                  <th key={colIndex} className={highlightColumns.includes(colIndex) ? 'highlight' : ''}>
+              <th className="time-column-header">זמנים</th> {/* Special class for זמנים */}
+                {/* Slice starting from column 2 (C) but display headers from that index */}
+                {data.length > 0 && data[0].slice(3).map((header, colIndex) => (
+                  <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlight' : ''}>
                     {header}
                   </th>
                 ))}
@@ -123,22 +124,21 @@ function App() {
               {data.slice(1).map((row, rowIndex) => {
                 const startTime = row[0] ? convertExcelTimeToHHMM(row[0]) : ''; // Convert Excel start time
                 const endTime = row[1] ? convertExcelTimeToHHMM(row[1]) : '';   // Convert Excel end time
-
                 return (
                   <tr key={rowIndex}>
-                    {row.map((value, colIndex) => {
-                      const isHighlighted = highlightColumns.includes(colIndex);
+                    {/* Slice the row data from index 2 to skip A and B */}
+                    {row.slice(2).map((value, colIndex) => {
+                      const isHighlighted = highlightColumns.includes(colIndex + 2);
                       const isCurrentTimeInRange = isTimeInRange(startTime, endTime);
 
                       const cellClass = `${isHighlighted ? 'highlight' : ''} ${isHighlighted && isCurrentTimeInRange ? 'active' : ''}`;
 
-                      // Render non-breaking space for empty cells
                       return (
-                        <td key={colIndex} className={cellClass}>
+                        <td key={colIndex + 2} className={cellClass}>
                           {typeof value === 'undefined' || value === null || value === '' ? (
                             '\u00A0' // Render non-breaking space for empty cells
                           ) : (
-                            colIndex === 0 || colIndex === 1 ? convertExcelTimeToHHMM(value) : (typeof value === 'string' ? value.trim() : value)
+                            value.trim()
                           )}
                         </td>
                       );
@@ -150,7 +150,7 @@ function App() {
           </table>
         </div>
 
-        <div className="sidebar" style={{ marginRight: '20px' }}> {/* Add margin here to create space */}
+        <div className="sidebar" style={{ marginRight: '20px' }}>
           <div className="time-day-display">
             <h1>{currentTime} - יום {currentDay}</h1>
           </div>

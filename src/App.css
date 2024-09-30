@@ -71,3 +71,18 @@ tr:nth-child(even) {
   margin-bottom: 20px;
   color: red;
 }
+
+.time-column-header {
+  background-color: #f0c040;  /* Light yellow background for header */
+  color: #333;  /* Darker text color */
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Style for the זמנים column cells */
+.time-column {
+  background-color: #ffeb3b;  /* Bright yellow background for cells */
+  color: #000;  /* Black text color */
+  font-style: italic;  /* Italicize the text */
+  text-align: center;  /* Center-align the text */
+}
