@@ -13,9 +13,11 @@
 }
 
 .sidebar {
-  width: 30%; /* Adjust based on your layout preference */
-  margin-left: 20px; /* Space between the table and sidebar */
+  flex-basis: 30%; /* Set a base width */
+  flex-shrink: 0; /* Prevent shrinking */
+  margin-right: 20px;
   background-color: palegoldenrod;
+
 }
 
 /* Table styling */
@@ -92,8 +94,13 @@ tr:nth-child(even) {
     padding: 10px;
   }
 
-  .content, .sidebar {
+  .content {
     width: 100%; /* Full width for both content and sidebar */
+  }
+
+  .sidebar {
+    width: 100%; /* Full width for both content and sidebar */
+    margin-right: 0;
   }
 
   /* Table adjustments */
@@ -149,5 +156,10 @@ tr:nth-child(even) {
 
   .time-column-header, .time-column {
     width: 50px; /* Shrink time column more for mobile */
+  }
+
+  .sidebar {
+    width: 100%; /* Full width for both content and sidebar */
+    margin-right: 0;
   }
 }
