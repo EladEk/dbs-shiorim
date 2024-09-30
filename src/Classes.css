@@ -42,18 +42,10 @@
   background-color: rgb(21, 36, 36);
 }
 
-/* Mobile styles */
+/* Mobile styles for the table inside Classes component only */
 @media (max-width: 768px) {
-  /* Adjust the font size for smaller screens */
-  .class-title {
-    font-size: 100%;
-  }
-
-  .title {
-    font-size: 150%;
-  }
-
-  table {
+  /* Target only tables inside the sidebar or specific to Classes */
+  .sidebar-main table {
     width: 100%;
     table-layout: fixed;
     overflow-x: auto; /* Allow horizontal scrolling */
@@ -61,23 +53,21 @@
     white-space: nowrap;
   }
 
-  th, td {
+  .sidebar-main th, .sidebar-main td {
     font-size: 0.9rem; /* Decrease font size on mobile */
     padding: 6px; /* Decrease padding */
   }
 
-  /* Hide unnecessary columns, show only first column and highlighted columns */
-  .class-name, .teacher-name {
-    display: none;
-  }
-
-  /* Show only the first column and highlighted columns */
-  th:nth-child(1), td:nth-child(1), th.highlight, td.highlight {
+  /* Ensure that "כיתה", "מורה", and the first column are visible */
+  .sidebar-main th:nth-child(1), .sidebar-main td:nth-child(1),  /* First column (time column, זמנים) */
+  .sidebar-main th:nth-child(2), .sidebar-main td:nth-child(2),  /* Second column (כיתה) */
+  .sidebar-main th:nth-child(3), .sidebar-main td:nth-child(3) { /* Third column (מורה) */
     display: table-cell;
   }
-}
 
-/* Adjust the fade effect */
-.fade {
-  transition: opacity 0.5s ease-in-out;
+  /* Hide other columns to save space */
+  .sidebar-main th:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)),
+  .sidebar-main td:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)) {
+    display: none;
+  }
 }

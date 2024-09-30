@@ -101,6 +101,7 @@ tr:nth-child(even) {
   .sidebar {
     width: 100%; /* Full width for both content and sidebar */
     margin-right: 0;
+    order: -1;
   }
 
   /* Table adjustments */

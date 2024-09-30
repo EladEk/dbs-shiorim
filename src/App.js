@@ -10,7 +10,7 @@ function App() {
   const [currentClass, setCurrentClass] = useState([]);
   const [currentTime, setCurrentTime] = useState(""); // State for current time
   const [currentDay, setCurrentDay] = useState("");  // State for current day in Hebrew
-
+  const deBug = 1; 
 
   useEffect(() => {
     fetch('/excel/database.xlsx')
@@ -61,12 +61,22 @@ function App() {
   const getTodayDayNameInHebrew = () => {
     const today = new Date();
     const options = { weekday: 'long' };
-    return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
+    if (deBug === 0) {
+      return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
+    } else {
+      return 'חמישי'; // Return 'חמישי' when deBug is not 0
+    }
   };
 
   const isTimeInRange = (startTime, endTime) => {
     const timeToCheck = currentTime; // Use the updated current time or the debug time
-    return timeToCheck >= startTime && timeToCheck <= endTime;
+    if (deBug === 0) {
+      return timeToCheck >= startTime && timeToCheck <= endTime;
+    } else {
+      return "09:20" >= startTime && "09:20" <= endTime;
+    }
+    
+    
   };
 
   const convertExcelTimeToHHMM = (excelTime) => {
