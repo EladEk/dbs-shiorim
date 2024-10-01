@@ -10,17 +10,19 @@
   padding: 0;
   border-radius: 5px;
   border: 1px solid #ddd;
-  
+  margin-top: 10px;  
 }
 
 .top-section {
-  margin-bottom: 20px; /* Adjust this value to increase or decrease the space */
+  background-color: rgb(234,122,183);
+  text-align: center;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .title-active-class {
   margin-top: 10px;
-  text-align: center;
-  align-items: center;
+  font-weight: bold;
   font-size: 350%;
 }
 
@@ -30,27 +32,32 @@
   font-size: 250%;
   color: navy;
   padding: 0; /* Remove default padding */
-  line-height: 0; /* Adjust line height for tighter spacing */
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  background-color: rgb(234,122,183);
 }
 
+/* Base class for sliding effect */
 .fade {
-  transition: opacity 0.5s ease-in-out; /* Adjust duration as needed */
+  transition: transform 0.5s ease-in-out; /* Sliding transition */
 }
 
+
+/* Slide-in (to make the element visible) */
 .fade-in {
-  opacity: 1;
+  transform: translateX(0); /* Position the element fully in view */
 }
 
+/* Slide-out (moves the element out of the view) */
 .fade-out {
-  opacity: 0;
+  transform: translateX(-100%); /* Slide out to the left */
 }
 
-.sidebar-main {
-  background-color: tomato;
-  margin-bottom: 20px;
+/* Sliding in from the right (when the new content enters the view) */
+.fade-slide-in {
+  transform: translateX(100%); /* Start off-screen to the right */
 }
+
 
 .class-name {
   background-color: rgb(41, 73, 73);
@@ -71,6 +78,21 @@
     white-space: nowrap;
   }
 
+  .top-section {
+    margin-top: 0px;
+  }
+
+  .title-active-class {
+    margin-top: 0px;
+  }
+
+  .title-time-frame {
+    margin-bottom: 0px;
+  }
+
+  .class-title {
+    margin-top: 0px;  
+  }
   .sidebar-main th, .sidebar-main td {
     font-size: 0.9rem; /* Decrease font size on mobile */
     padding: 6px; /* Decrease padding */

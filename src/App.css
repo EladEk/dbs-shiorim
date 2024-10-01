@@ -6,7 +6,7 @@
   padding: 20px;
   text-align: right;
   direction: rtl;
-  background-color: darkcyan;
+  background-color: rgb(137,217,244);
 }
 
 .content {
@@ -34,7 +34,7 @@ table {
 
 /* Specific styling for the time column */
 .time-column-header {
-  background-color: #096e47;
+  background-color: rgb(110,159,21);
   color: white;
   font-weight: bold;
   text-align: center;
@@ -70,21 +70,19 @@ tr:nth-child(even) {
 
 /* Highlight and active state styling */
 .highlight {
-  background-color: tomato;
-  color: white;
+  background-color: rgb(234,122,183);
 }
 
 .active {
   font-weight: bold;
   background-color: black;
-  color: wheat;
+  color: rgb(251,194,25);
 }
 
 .day-display {
   text-align: center;
-  color: red;
   font-size: 200%;
-  background-color: palegoldenrod;
+  background-color: rgb(251,194,25);
   margin: 0; /* Remove extra margin */
   padding: 5px; /* Adjust padding */
 }
@@ -96,7 +94,7 @@ tr:nth-child(even) {
   margin: 0; /* Remove margin */
   padding: 5px; /* Adjust padding */
   font-weight: bold;
-  background-color: palegoldenrod;
+  background-color: rgb(251,194,25);
 }
 
 .day-display h1, .time-display h1 {
