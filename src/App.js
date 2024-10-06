@@ -12,6 +12,8 @@ function App() {
   const [currentDay, setCurrentDay] = useState("");  
   const [firstActiveClassC, setFirstActiveClassC] = useState(""); // Store the first non-empty column C value
   const deBug = 0;
+  const deBugDay = "רביעי";
+  const deBugTime = "11:01";  
 
   useEffect(() => {
     fetch('/excel/database.xlsx')
@@ -60,7 +62,7 @@ function App() {
     if (deBug === 0) {
       return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
     } else {
-      return 'חמישי'; 
+      return deBugDay; 
     }
   };
 
@@ -69,7 +71,7 @@ function App() {
     if (deBug === 0) {
       return timeToCheck >= startTime && timeToCheck <= endTime;
     } else {
-      return "09:20" >= startTime && "09:20" <= endTime;
+      return deBugTime >= startTime && deBugTime <= endTime;
     }
   };
 
@@ -126,7 +128,7 @@ function App() {
                   data[0]
                     .slice(3)
                     .map((header, colIndex) => (
-                      <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlight' : ''}>
+                      <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlightHeader' : ''}>
                         {header}
                       </th>
                     ))}

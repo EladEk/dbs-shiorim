@@ -1,22 +1,26 @@
 /* Flexbox layout for table and sidebar */
 
 .app-container {
-  display: flex;
-  justify-content: space-between;
   padding: 20px;
   text-align: right;
   direction: rtl;
   background-color: rgb(137,217,244);
+  margin: 0; /* Remove margin */
+  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* Two equal columns */
+  padding:0%;
 }
+
 
 .content {
   width: 70%; /* Adjust based on your layout preference */
 }
 
 .sidebar {
-  flex-basis: 30%; /* Set a base width */
+  flex-basis: 20%; /* Set a base width */
   flex-shrink: 0; /* Prevent shrinking */
-  margin-right: 20px;
+  margin-right: 0px; /* Space between sidebar and table */
   padding: 0; /* Remove padding */
   margin-bottom: 10px;
 }
@@ -27,9 +31,9 @@ table {
   text-align: right; /* Align text to the right */
   direction: rtl; /* Set the table to follow RTL direction */
   background-color: #f9f9f9; /* Light background */
-  border-radius: 5px;
-  width: 100%;
+  width: fit-content;
   table-layout: auto; /* Allow cells to shrink */
+  font-size: 180%;
 }
 
 /* Specific styling for the time column */
@@ -40,6 +44,7 @@ table {
   text-align: center;
   white-space: nowrap;
   width: 80px; /* Set width for header */
+  font-size: 170%;
 }
 
 .time-column {
@@ -53,30 +58,40 @@ table {
 
 /* General table cell styling */
 th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  border: 1px solid black;
+  padding: 1px;
   text-align: right;
   white-space: nowrap;
+  line-height: 1;
 }
 
 th {
   background-color: #4CAF50;
   color: white;
+  font-size: 170%;
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color:rgba(182, 180, 173, 0.466);
 }
 
 /* Highlight and active state styling */
 .highlight {
   background-color: rgb(234,122,183);
+  font-weight: bold;
+}
+
+.highlightHeader{
+  background-color: rgb(221, 31, 135);
+  color: rgb(251,194,25);
 }
 
 .active {
   font-weight: bold;
   background-color: black;
   color: rgb(251,194,25);
+  font-size: 130%;
+  border: 1px solid white;
 }
 
 .day-display {
@@ -104,11 +119,25 @@ tr:nth-child(even) {
 
 /* --- Responsive Design --- */
 
-/* For tablets and mobile screens (screens smaller than 768px) */
+/* For tablets and mobile screens (screens smaller than 768px)//////////////////////////////////////////////////////////////////////// */
 @media only screen and (max-width: 768px) {
   .app-container {
+    margin: 0; /* Remove margin */
     flex-direction: column;
-    padding: 10px;
+    display: grid;
+    /*grid-template-columns: 1fr 1fr; /* Two equal columns */
+    padding:0%;
+    font-size: 50%;
+  }
+
+  .active {
+    font-size: 100%;
+    padding:0%;
+  }
+  
+
+  .highlightHeader{
+    font-size: 110%;
   }
 
   .content {
@@ -118,24 +147,26 @@ tr:nth-child(even) {
   .sidebar {
     width: 100%; /* Full width for both content and sidebar */
     margin-right: 0;
-    order: -1;
+    order: 0;
   }
 
   /* Table adjustments */
   table {
-    width: 100%;
     display: block;
     overflow-x: auto;
+    padding:0%;
   }
 
   th, td {
-    font-size: 14px; /* Slightly smaller font for mobile */
+    font-size: 80%; /* Slightly smaller font for mobile */
     padding: 6px; /* Reduce padding to fit more content */
+    max-width: fit-content;
   }
 
   /* Shrink the time column */
   .time-column-header {
     width: 60px;
+    font-size: 80%;
   }
 
   .time-column {
@@ -152,12 +183,12 @@ tr:nth-child(even) {
   }
 
   /* Show only the highlighted column */
-  th.highlight, td.highlight {
+  th.highlight, td.highlight, th.highlightHeader  {
     display: table-cell; /* Only show the highlighted day column */
   }
 
   .day-display {
-    font-size: 200%;
+    font-size: 100%;
   }
 }
 
@@ -170,6 +201,8 @@ tr:nth-child(even) {
   .day-display {
     font-size: 200%;
   }
+
+  
 
   th, td {
     font-size: 12px; /* Further reduce the font size */

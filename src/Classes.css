@@ -61,10 +61,19 @@
 
 .class-name {
   background-color: rgb(41, 73, 73);
+  white-space: normal;
+  padding-left: 10px;
 }
 
 .teacher-name {
   background-color: rgb(21, 36, 36);
+  white-space: normal;
+}
+
+.sidebar-main table {
+  width: 100%;
+  display: block;
+  white-space: normal;
 }
 
 /* Mobile styles for the table inside Classes component only */
@@ -75,7 +84,6 @@
     table-layout: fixed;
     overflow-x: auto; /* Allow horizontal scrolling */
     display: block;
-    white-space: nowrap;
   }
 
   .top-section {
@@ -95,7 +103,7 @@
   }
   .sidebar-main th, .sidebar-main td {
     font-size: 0.9rem; /* Decrease font size on mobile */
-    padding: 6px; /* Decrease padding */
+    padding: 6px; /* Decrease padding */   
   }
 
   /* Ensure that "כיתה", "מורה", and the first column are visible */

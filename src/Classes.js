@@ -67,7 +67,9 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
     <div className='sidebar-main'>
       {firstActiveClassC ? (
         <div className="top-section">
-  <label className="title-active-class">שיעורים פעילים</label>
+  <label className="title-active-class">שיעורים</label>
+  <br />
+  <label className="title-active-class"> פעילים</label>
   <br />
     <label className="title-time-frame">{firstActiveClassC}</label>
 </div>
