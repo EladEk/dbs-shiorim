@@ -1,29 +1,37 @@
 /* Classes.css */
 
-.class-title {
-  text-align: center;
-  align-items: center;
-  font-size: 300%;
-  background-color: #4CAF50;
-  color: black;
-  margin: 0;
-  padding: 0;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  margin-top: 10px;  
-}
+
 
 .top-section {
   background-color: rgb(234,122,183);
   text-align: center;
   align-items: center;
   margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.class-after-class {
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  background-color: #4CAF50;
 }
 
 .title-active-class {
   margin-top: 10px;
   font-weight: bold;
   font-size: 350%;
+}
+
+.class-title {
+  text-align: center;
+  align-items: center;
+  font-size: 300%;
+
+  color: black;
+  margin: 0;
+  padding: 0; 
 }
 
 .title-time-frame {
@@ -86,6 +94,10 @@
     display: block;
   }
 
+  .class-after-class {
+    margin-top: 0px;
+  }
+  
   .top-section {
     margin-top: 0px;
   }

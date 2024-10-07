@@ -25,6 +25,14 @@
   margin-bottom: 10px;
 }
 
+.sidebar-day-and-time{
+  background-color: rgb(251,194,25);
+  text-align: center;
+  padding: 5px;
+  margin: 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
 /* Table styling */
 table {
   border-collapse: collapse;
@@ -110,6 +118,7 @@ tr:nth-child(even) {
   padding: 5px; /* Adjust padding */
   font-weight: bold;
   background-color: rgb(251,194,25);
+  
 }
 
 .day-display h1, .time-display h1 {

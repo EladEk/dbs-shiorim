@@ -1,0 +1,25 @@
+.newsbar-container {
+    width: 100%;
+    overflow: hidden;
+    background-color: #f1f1f1;
+    white-space: nowrap;
+    position: relative;
+    font-size: 200%;
+}
+
+.newsbar-content {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.news-item {
+    display: inline-block;
+    padding: 0 2rem;
+    animation: scroll 10s linear;
+}
+
+@media (max-width: 768px) {
+    .newsbar-container {
+        font-size: 100%;
+    }
+}

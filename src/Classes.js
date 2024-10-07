@@ -81,7 +81,7 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
         {sheetKeys.length > 0 && sheetData[currentSheetKey] ? (
           <div
             key={currentSheetIndex}
-            className={`fade ${isFading ? 'fade-out' : 'fade-in'}`} 
+            className={`fade ${isFading ? 'fade-out' : 'fade-in'} class-after-class`} 
           >
             <div className="class-title-container">
               <h2 className="class-title">{currentSheetKey}</h2>
@@ -109,6 +109,7 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
                 ))}
               </tbody>
             </table>
+            <br />
           </div>
         ) : (
           <p>לא נמצאו שיעורים פעילים</p>

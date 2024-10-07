@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import './App.css'; // Assuming styles will be added here
 import Classes from './Classes'; // Import the Classes component
 import Banner from './Banner';
+import Newsbar from './Newsbar';
 
 function App() {
   const [data, setData] = useState([]);
@@ -118,6 +119,7 @@ function App() {
   return (
     <div>
       <Banner />
+      <Newsbar />
       <div className="app-container">
         <div className="content">
           <table className="to-the-right">
@@ -161,13 +163,15 @@ function App() {
           </table>
         </div>
         <div className="sidebar">
-          <div className="day-display">
-            <h1>יום {currentDay}</h1>
-          </div>
-            <div className="time-display">            
-              {currentTime.slice(0, 2)}
-              <span className="blinking-colon">:</span>
-              {currentTime.slice(3, 5)}
+          <div className="sidebar-day-and-time">
+            <div className="day-display">
+              <h1>יום {currentDay}</h1>
+            </div>
+              <div className="time-display">            
+                {currentTime.slice(0, 2)}
+                <span className="blinking-colon">:</span>
+                {currentTime.slice(3, 5)}
+              </div>
             </div>
           {Array.isArray(currentClass) && <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC}/>}
         </div>
