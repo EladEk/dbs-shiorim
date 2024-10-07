@@ -31,13 +31,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      window.location.reload();
-    }, 7200000); // 2 hours in milliseconds
-    return () => clearInterval(interval);
-  }, []);  
-
-  useEffect(() => {
     updateCurrentTime();
     const interval = setInterval(() => {
       updateCurrentTime();
