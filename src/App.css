@@ -10,8 +10,12 @@
   display: grid;
   grid-template-columns: 1fr 3fr; 
   padding:0%;
+
 }
 
+.app-font{
+  font-family: "Times New Roman";
+}
 
 .content {
   width: 70%; /* Adjust based on your layout preference */
@@ -23,6 +27,7 @@
   margin-right: 0px; /* Space between sidebar and table */
   padding: 0; /* Remove padding */
   margin-bottom: 10px;
+  
 }
 
 .sidebar-day-and-time{
@@ -41,7 +46,7 @@ table {
   background-color: #f9f9f9; /* Light background */
   width: fit-content;
   table-layout: auto; /* Allow cells to shrink */
-  font-size: 180%;
+  font-size: 200%;
 }
 
 /* Specific styling for the time column */
@@ -49,7 +54,7 @@ table {
   background-color: rgb(110,159,21);
   color: white;
   font-weight: bold;
-  text-align: center;
+  text-align: right;
   white-space: nowrap;
   width: 80px; /* Set width for header */
   font-size: 170%;
@@ -136,14 +141,24 @@ tr:nth-child(even) {
   100% { opacity: 1; }
 }
 
-@media only screen and (max-width: 768px) {
+
+@media only screen and (max-width: 1500px) {
+
+
   .app-container {
     margin: 0; /* Remove margin */
     flex-direction: column;
     display: grid;
+    /*grid-template-columns: 1fr 1fr; /* Two equal columns */
     padding:0%;
-    font-size: 50% !important;
+    font-size: 80%;
+    grid-template-columns: 1fr 3fr;
   }
+
+  .day-display {
+    font-size: 200% !important; 
+  }
+
 
   .active {
     font-size: 100%;
@@ -186,6 +201,69 @@ tr:nth-child(even) {
 
   .time-column {
     width: 60px;
+  }
+
+
+  .day-display {
+    font-size: 100%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .app-container {
+    margin: 0;
+    flex-direction: column;
+    display: grid;
+    padding:0%;
+    font-size: 50% !important;
+  }
+
+  .day-display {
+    font-size: 200%;
+  }
+
+  .active {
+    font-size: 100%;
+    padding:0%;
+  }
+  
+
+  .highlightHeader{
+    font-size: 110%;
+  }
+
+  .content {
+    width: 100%; /* Full width for both content and sidebar */
+  }
+
+  .sidebar {
+    width: 100%; /* Full width for both content and sidebar */
+    margin-right: 0;
+    order: 0;
+  }
+
+  /* Table adjustments */
+  table {
+    display: block;
+    overflow-x: auto;
+    padding:0%;
+  }
+
+  th, td {
+    font-size: 100%; /* Slightly smaller font for mobile */
+    padding: 6px; /* Reduce padding to fit more content */
+    max-width: fit-content;
+  }
+
+  /* Shrink the time column */
+  .time-column-header {
+    width: 60px;
+    font-size: 110% !important;
+  }
+
+  .time-column {
+    width: 60px;
+    font-size: 80%;
   }
 
   /* Hide all columns except the time column and the highlighted column */
@@ -202,69 +280,5 @@ tr:nth-child(even) {
     display: table-cell; /* Only show the highlighted day column */
   }
 
-  .day-display {
-    font-size: 100%;
-  }
+
 }
-
-/* For mobile phones (screens smaller than 480px) */
-@media only screen and (max-width: 1500px) {
-  .app-container {
-    margin: 0; /* Remove margin */
-    flex-direction: column;
-    display: grid;
-    /*grid-template-columns: 1fr 1fr; /* Two equal columns */
-    padding:0%;
-    font-size: 80%;
-    grid-template-columns: 1fr 3fr;
-  }
-
-  .active {
-    font-size: 100%;
-    padding:0%;
-  }
-  
-
-  .highlightHeader{
-    font-size: 110%;
-  }
-
-  .content {
-    width: 100%; /* Full width for both content and sidebar */
-  }
-
-  .sidebar {
-    width: 100%; /* Full width for both content and sidebar */
-    margin-right: 0;
-    order: 0;
-  }
-
-  /* Table adjustments */
-  table {
-    display: block;
-    overflow-x: auto;
-    padding:0%;
-  }
-
-  th, td {
-    font-size: 80%; /* Slightly smaller font for mobile */
-    padding: 6px; /* Reduce padding to fit more content */
-    max-width: fit-content;
-  }
-
-  /* Shrink the time column */
-  .time-column-header {
-    width: 60px;
-    font-size: 80%;
-  }
-
-  .time-column {
-    width: 60px;
-  }
-
-
-  .day-display {
-    font-size: 100%;
-  }
-}
-

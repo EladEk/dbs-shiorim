@@ -117,7 +117,7 @@ function App() {
   }, [data, highlightColumns, currentTime]);
 
   return (
-    <div>
+    <div className='app-font'>
       <Banner />
       <Newsbar />
       <div className="app-container">
