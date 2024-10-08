@@ -8,7 +8,7 @@
   margin: 0; /* Remove margin */
   flex-direction: column;
   display: grid;
-  grid-template-columns: 1fr 3fr; /* Two equal columns */
+  grid-template-columns: 1fr 3fr; 
   padding:0%;
 }
 
@@ -126,9 +126,16 @@ tr:nth-child(even) {
   padding: 0; /* Remove padding */
 }
 
-/* --- Responsive Design --- */
+.blinking-colon {
+  animation: blink 2.5s infinite; /* Blinking effect every second */
+}
 
-/* For tablets and mobile screens (screens smaller than 768px)//////////////////////////////////////////////////////////////////////// */
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 @media only screen and (max-width: 768px) {
   .app-container {
     margin: 0; /* Remove margin */
@@ -202,38 +209,63 @@ tr:nth-child(even) {
 }
 
 /* For mobile phones (screens smaller than 480px) */
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 1500px) {
   .app-container {
-    padding: 5px;
+    margin: 0; /* Remove margin */
+    flex-direction: column;
+    display: grid;
+    /*grid-template-columns: 1fr 1fr; /* Two equal columns */
+    padding:0%;
+    font-size: 80%;
+    grid-template-columns: 1fr 3fr;
   }
 
-  .day-display {
-    font-size: 200%;
+  .active {
+    font-size: 100%;
+    padding:0%;
   }
-
   
 
-  th, td {
-    font-size: 12px; /* Further reduce the font size */
-    padding: 4px;
+  .highlightHeader{
+    font-size: 110%;
   }
 
-  .time-column-header, .time-column {
-    width: 50px; /* Shrink time column more for mobile */
+  .content {
+    width: 100%; /* Full width for both content and sidebar */
   }
 
   .sidebar {
     width: 100%; /* Full width for both content and sidebar */
     margin-right: 0;
+    order: 0;
+  }
+
+  /* Table adjustments */
+  table {
+    display: block;
+    overflow-x: auto;
+    padding:0%;
+  }
+
+  th, td {
+    font-size: 80%; /* Slightly smaller font for mobile */
+    padding: 6px; /* Reduce padding to fit more content */
+    max-width: fit-content;
+  }
+
+  /* Shrink the time column */
+  .time-column-header {
+    width: 60px;
+    font-size: 80%;
+  }
+
+  .time-column {
+    width: 60px;
+  }
+
+
+  .day-display {
+    font-size: 100%;
   }
 }
 
-.blinking-colon {
-  animation: blink 2.5s infinite; /* Blinking effect every second */
-}
-
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
-}
