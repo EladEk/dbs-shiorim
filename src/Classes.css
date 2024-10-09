@@ -1,7 +1,5 @@
 /* Classes.css */
 
-
-
 .top-section {
   background-color: rgb(234,122,183);
   text-align: center;
@@ -13,7 +11,7 @@
 
 .class-after-class {
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 3px solid #ddd;
   margin-top: 10px;
   background-color: #4CAF50;
 }
@@ -24,14 +22,66 @@
   font-size: 350%;
 }
 
-.class-title {
+.class-header {
   text-align: center;
   align-items: center;
   font-size: 300%;
-
   color: black;
   margin: 0;
-  padding: 0; 
+  padding: 0;
+}
+
+.class-location {
+  font-size: 300%;
+  background-color: rgb(138, 171, 184);
+  border: 1px solid #ddd;
+  border-color: black;
+}
+
+.class-teacher {
+  font-size: 300%;
+  border: 1px solid #ddd;
+  border-color: black;
+  background-color: rgb(138, 171, 184);
+}
+
+.class-location-label {
+  font-weight: bolder;
+  background-color: slategrey;
+}
+
+.class-teacher-label {
+  font-weight: bolder;
+  background-color: slategrey;
+}
+
+.class-location-text {
+  font-weight: bolder;
+}
+
+.class-teacher-text {
+  font-weight: bolder;
+}
+
+.matched-students {
+  font-weight: bolder;
+  background-color: rgb(138, 171, 184);;
+}
+
+.matched-students-border {
+  border: 1px solid #ddd;
+  border-color: black;
+}
+
+.matched-students-label {
+  font-size: 300%;
+  font-weight: bolder;
+  background-color: slategrey;
+}
+
+.matched-students-text {
+  font-size: 200%;
+  background-color: rgb(138, 171, 184);
 }
 
 .title-time-frame {
@@ -39,7 +89,7 @@
   align-items: center;
   font-size: 250%;
   color: navy;
-  padding: 0; /* Remove default padding */
+  padding: 0;
   font-weight: bold;
   margin-bottom: 10px;
   background-color: rgb(234,122,183);
@@ -47,35 +97,22 @@
 
 /* Base class for sliding effect */
 .fade {
-  transition: transform 0.5s ease-in-out; /* Sliding transition */
+  transition: transform 0.5s ease-in-out;
 }
-
 
 /* Slide-in (to make the element visible) */
 .fade-in {
-  transform: translateX(0); /* Position the element fully in view */
+  transform: translateX(0);
 }
 
 /* Slide-out (moves the element out of the view) */
 .fade-out {
-  transform: translateX(-100%); /* Slide out to the left */
+  transform: translateX(-100%);
 }
 
 /* Sliding in from the right (when the new content enters the view) */
 .fade-slide-in {
-  transform: translateX(100%); /* Start off-screen to the right */
-}
-
-
-.class-name {
-  background-color: rgb(41, 73, 73);
-  white-space: normal;
-  padding-left: 10px;
-}
-
-.teacher-name {
-  background-color: rgb(21, 36, 36);
-  white-space: normal;
+  transform: translateX(100%);
 }
 
 .sidebar-main table {
@@ -86,11 +123,10 @@
 
 /* Mobile styles for the table inside Classes component only */
 @media (max-width: 768px) {
-  /* Target only tables inside the sidebar or specific to Classes */
   .sidebar-main table {
     width: 100%;
     table-layout: fixed;
-    overflow-x: auto; /* Allow horizontal scrolling */
+    overflow-x: auto;
     display: block;
   }
 
@@ -110,18 +146,15 @@
     margin-bottom: 0px;
   }
 
-  .class-title {
-    margin-top: 0px;  
-  }
   .sidebar-main th, .sidebar-main td {
-    font-size: 0.9rem; /* Decrease font size on mobile */
-    padding: 6px; /* Decrease padding */   
+    font-size: 0.9rem;
+    padding: 6px;   
   }
 
-  /* Ensure that "כיתה", "מורה", and the first column are visible */
-  .sidebar-main th:nth-child(1), .sidebar-main td:nth-child(1),  /* First column (time column, זמנים) */
-  .sidebar-main th:nth-child(2), .sidebar-main td:nth-child(2),  /* Second column (כיתה) */
-  .sidebar-main th:nth-child(3), .sidebar-main td:nth-child(3) { /* Third column (מורה) */
+  /* Ensure that the first three columns are visible */
+  .sidebar-main th:nth-child(1), .sidebar-main td:nth-child(1),
+  .sidebar-main th:nth-child(2), .sidebar-main td:nth-child(2),
+  .sidebar-main th:nth-child(3), .sidebar-main td:nth-child(3) {
     display: table-cell;
   }
 

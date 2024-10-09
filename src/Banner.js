@@ -46,7 +46,6 @@ const Banner = () => {
           const birthdayDate = new Date(now.getFullYear(), month - 1, day);
 
           // Check if the birthday falls within this week's range (ignoring the year)
-          console.log("Sunday:", sunday,"birthdayDate:", birthdayDate, "saturday:", saturday)
           return birthdayDate >= sunday && birthdayDate <= saturday;
         });
 

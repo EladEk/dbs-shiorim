@@ -3,11 +3,11 @@ import * as XLSX from 'xlsx';
 import './Classes.css';
 
 const Classes = ({ currentClass, firstActiveClassC }) => {
-  const [sheetData, setSheetData] = useState({});
+  const [activeClasses, setActiveClasses] = useState([]);
+  const [matchedStudents, setMatchedStudents] = useState([]); // Array to hold matched students
   const [error, setError] = useState(null);
-  const [currentSheetIndex, setCurrentSheetIndex] = useState(0); 
+  const [currentClassIndex, setCurrentClassIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
-  const [clockProgress, setClockProgress] = useState(0); // Track clock progress for the round clock
 
   useEffect(() => {
     if (currentClass.length > 0) {
@@ -15,107 +15,123 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
         .then(response => response.arrayBuffer())
         .then(arrayBuffer => {
           const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-          const newSheetData = {};
+          const classesSheet = workbook.Sheets['Classes'];
+          
+          if (!classesSheet) {
+            setError('Sheet "Classes" not found.');
+            return;
+          }
 
-          currentClass.forEach(className => {
-            const matchedSheet = workbook.SheetNames.find(sheet => sheet.trim() === className.trim());
-            
-            if (matchedSheet) {
-              const sheet = workbook.Sheets[matchedSheet];
-              const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' });
-              newSheetData[className] = jsonData;
-            } else {
-              console.warn(`Sheet for class ${className} not found.`);
-            }
-          });
+          const jsonData = XLSX.utils.sheet_to_json(classesSheet, { header: 1, defval: '\u00A0' });
 
-          setSheetData(newSheetData);
+          const newActiveClasses = jsonData.slice(1)
+            .filter(row => currentClass.includes(row[0]))
+            .map(row => ({
+              ClassName: row[0],
+              Teacher: row[1],
+              ClassLocation: row[2],
+            }));
+
+          setActiveClasses(newActiveClasses);
         })
         .catch(err => setError(`Error fetching Excel file: ${err.message}`));
     }
   }, [currentClass]);
 
   useEffect(() => {
-    if (Object.keys(sheetData).length > 0) {
+    if (activeClasses.length > 0) {
       const interval = setInterval(() => {
-        // Trigger fade-out effect
         setIsFading(true);
-        setClockProgress(0); // Reset the clock when fading starts
-
         setTimeout(() => {
-          setCurrentSheetIndex(prevIndex => (prevIndex + 1) % Object.keys(sheetData).length);
+          setCurrentClassIndex(prevIndex => (prevIndex + 1) % activeClasses.length);
           setIsFading(false); 
         }, 500); 
       }, 5000); 
 
-      // Update the clock progress every 50ms
-      const clockInterval = setInterval(() => {
-        setClockProgress(prev => (prev < 100 ? prev + 1 : 0));
-      }, 50); // Each tick moves the clock slightly forward
-
-      return () => {
-        clearInterval(interval);
-        clearInterval(clockInterval); // Clear clock interval
-      };
+      return () => clearInterval(interval);
     }
-  }, [sheetData]);
+  }, [activeClasses]);
 
-  const sheetKeys = Object.keys(sheetData);
-  const currentSheetKey = sheetKeys[currentSheetIndex];
+  useEffect(() => {
+    const currentClassData = activeClasses[currentClassIndex];
+    setMatchedStudents([])
+    if (currentClassData) {
+      const regex = /(עברית|חשבון|אנגלית)[\s-]*\S*\s*(\d+)/;
+      const match = currentClassData.ClassName.match(regex);
+      if (match) {
+        const subject = match[1]; // "עברית" or "חשבון"
+        const level = parseInt(match[2], 10); // Extract the number
+        fetch('/excel/database.xlsx')
+          .then(response => response.arrayBuffer())
+          .then(arrayBuffer => {
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+            const levelSheet = workbook.Sheets['Level'];
+
+            if (!levelSheet) {
+              setError('Sheet "Level" not found.');
+              return;
+            }
+            const jsonData = XLSX.utils.sheet_to_json(levelSheet, { header: 1, defval: '\u00A0' });
+            const matched = jsonData.slice(1) // Skip the header row
+            .filter(row => {
+              const subjectIndex = jsonData[0].indexOf(subject); // Find the index of the subject column
+              return subjectIndex !== -1 && row[subjectIndex] === level; // Check if the subject column matches the level
+            })
+            .map(row => row[0]);
+            setMatchedStudents(matched);
+          })
+          .catch(err => setError(`Error fetching Excel file: ${err.message}`));
+      }
+    }
+  }, [activeClasses, currentClassIndex]);
+
+  const currentClassData = activeClasses[currentClassIndex];
 
   return (
     <div className='sidebar-main'>
       {firstActiveClassC ? (
         <div className="top-section">
-  <label className="title-active-class">שיעורים</label>
-  <br />
-  <label className="title-active-class"> פעילים</label>
-  <br />
-    <label className="title-time-frame">{firstActiveClassC}</label>
-</div>
+          <label className="title-active-class">שיעורים</label>
+          <br />
+          <label className="title-active-class"> פעילים</label>
+          <br />
+          <label className="title-time-frame">{firstActiveClassC}</label>
+        </div>
       ) : (
         <h1 className="title">אין שיעורים פעילים</h1>
       )}
 
       {error && <p>{error}</p>}
-        {sheetKeys.length > 0 && sheetData[currentSheetKey] ? (
-          <div
-            key={currentSheetIndex}
-            className={`fade ${isFading ? 'fade-out' : 'fade-in'} class-after-class`} 
-          >
-            <div className="class-title-container">
-              <h2 className="class-title">{currentSheetKey}</h2>
+      {currentClassData ? (
+        <div className={`fade ${isFading ? 'fade-out' : 'fade-in'} class-after-class`}>
+          <h1 className="class-header">{currentClassData.ClassName}</h1>
+          <div>
+            <div className="class-teacher">
+              <label className="class-teacher-label">מורה:</label>
+              <label className="class-teacher-text"> {currentClassData.Teacher}</label>
             </div>
-            <table className="sidebar-main">
-              <thead className="class-name">
-                <tr>
-                  {sheetData[currentSheetKey][0]?.map((header, colIndex) => (
-                    <th key={colIndex} className="class-name">{header}</th>
-                  ))}
-                </tr>
-                <tr>
-                  {sheetData[currentSheetKey][1]?.map((header, colIndex) => (
-                    <th key={colIndex} className="teacher-name">{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {sheetData[currentSheetKey]?.slice(2).map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row?.map((value, colIndex) => (
-                      <td key={colIndex}>{value}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <br />
+            <div className="class-location">
+              <label className="class-location-label">כיתה:</label>
+              <label className="class-location-text"> {currentClassData.ClassLocation}</label>
+            </div>
           </div>
-        ) : (
-          <p>לא נמצאו שיעורים פעילים</p>
-        )}
+          {matchedStudents.length > 0 && (
+            <div className="matched-students-border">
+              <div className="matched-students">
+              <label className="matched-students-label">תלמידים:</label>
+              </div>
+              <div className="matched-students-text">
+                {matchedStudents.map((student, index) => (
+                  <li key={index}>{student}</li>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p>לא נמצאו שיעורים פעילים</p>
+      )}
     </div>
-    
   );
 };
 
