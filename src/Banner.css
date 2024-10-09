@@ -24,6 +24,18 @@
   opacity: 1;
 }
 
+.birthday-title {
+  color: rgb(234,122,183);
+  font-weight: bold;
+  font-size: 130%;
+}
+
+.birthday-line {
+  color: rgb(251,194,25);
+  font-weight: bold;
+  font-size: 100%;
+}
+
 /* Mobile support */
 @media (max-width: 768px) {
   .banner {
