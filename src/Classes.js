@@ -94,7 +94,6 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
         if (numberMatch) {
           level = parseInt(numberMatch[0], 10); // Use the number found
         }
-        console.log ("level",level,"subject",subject)
         // Fetch students who match the subject and level from the "Level" sheet
         fetch('/excel/database.xlsx')
           .then(response => response.arrayBuffer())
