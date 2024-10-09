@@ -14,7 +14,7 @@ const Banner = () => {
       setTimeout(() => {
         setShowBanner(false);
       }, 30000);
-    }, 300); // 5 minutes interval
+    }, 300000); // 5 minutes interval
 
     return () => clearInterval(showBannerInterval); // Clean up interval on component unmount
   }, []);
