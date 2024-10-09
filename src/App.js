@@ -17,6 +17,14 @@ function App() {
   const deBugTime = "08:40";  
 
   useEffect(() => {
+    // Refresh the page every 4 hours
+    const refreshInterval = setInterval(() => {
+      window.location.reload();
+    }, 4 * 60 * 60 * 1000); // 4 hours in milliseconds
+    return () => clearInterval(refreshInterval); // Cleanup on unmount
+  }, []);
+
+  useEffect(() => {
     fetch('/excel/database.xlsx')
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
