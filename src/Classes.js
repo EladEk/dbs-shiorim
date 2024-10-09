@@ -4,10 +4,31 @@ import './Classes.css';
 
 const Classes = ({ currentClass, firstActiveClassC }) => {
   const [activeClasses, setActiveClasses] = useState([]);
-  const [matchedStudents, setMatchedStudents] = useState([]); // Array to hold matched students
+  const [subjects, setSubjects] = useState([]); // Array to store subjects from header
+  const [matchedStudents, setMatchedStudents] = useState([]);
   const [error, setError] = useState(null);
   const [currentClassIndex, setCurrentClassIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
+
+  // Fetch subjects from the "Level" sheet header
+  useEffect(() => {
+    fetch('/excel/database.xlsx')
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => {
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const levelSheet = workbook.Sheets['Level'];
+
+        if (!levelSheet) {
+          setError('Sheet "Level" not found.');
+          return;
+        }
+
+        const jsonData = XLSX.utils.sheet_to_json(levelSheet, { header: 1, defval: '\u00A0' });
+        const headerRow = jsonData[0]; // Assuming the first row is the header
+        setSubjects(headerRow.filter(header => header)); // Filter out any empty headers
+      })
+      .catch(err => setError(`Error fetching Excel file: ${err.message}`));
+  }, []);
 
   useEffect(() => {
     if (currentClass.length > 0) {
@@ -54,13 +75,27 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
 
   useEffect(() => {
     const currentClassData = activeClasses[currentClassIndex];
-    setMatchedStudents([])
-    if (currentClassData) {
-      const regex = /(עברית|חשבון|אנגלית)[\s-]*\S*\s*(\d+)/;
-      const match = currentClassData.ClassName.match(regex);
-      if (match) {
-        const subject = match[1]; // "עברית" or "חשבון"
-        const level = parseInt(match[2], 10); // Extract the number
+    setMatchedStudents([]);
+    if (currentClassData && subjects.length > 0) {
+      // Determine if the class name contains any of the subjects
+      let subject = null;
+      let level = 1; // Default level
+
+      for (const header of subjects) {
+        if (currentClassData.ClassName.includes(header)) {
+          subject = header;
+          break;
+        }
+      }
+
+      // If a subject is found, check for a number after it
+      if (subject) {
+        const numberMatch = currentClassData.ClassName.match(/\d+/); // Find any number in the string
+        if (numberMatch) {
+          level = parseInt(numberMatch[0], 10); // Use the number found
+        }
+        console.log ("level",level,"subject",subject)
+        // Fetch students who match the subject and level from the "Level" sheet
         fetch('/excel/database.xlsx')
           .then(response => response.arrayBuffer())
           .then(arrayBuffer => {
@@ -71,19 +106,21 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
               setError('Sheet "Level" not found.');
               return;
             }
+
             const jsonData = XLSX.utils.sheet_to_json(levelSheet, { header: 1, defval: '\u00A0' });
+            const subjectIndex = jsonData[0].indexOf(subject); // Find the index of the subject column
+            if (subjectIndex === -1) return;
+
             const matched = jsonData.slice(1) // Skip the header row
-            .filter(row => {
-              const subjectIndex = jsonData[0].indexOf(subject); // Find the index of the subject column
-              return subjectIndex !== -1 && row[subjectIndex] === level; // Check if the subject column matches the level
-            })
-            .map(row => row[0]);
+              .filter(row => row[subjectIndex] === level) // Check if the subject column matches the level
+              .map(row => row[0]); // Get the student's name from column "ילד"
+
             setMatchedStudents(matched);
           })
           .catch(err => setError(`Error fetching Excel file: ${err.message}`));
       }
     }
-  }, [activeClasses, currentClassIndex]);
+  }, [activeClasses, currentClassIndex, subjects]);
 
   const currentClassData = activeClasses[currentClassIndex];
 
@@ -118,7 +155,7 @@ const Classes = ({ currentClass, firstActiveClassC }) => {
           {matchedStudents.length > 0 && (
             <div className="matched-students-border">
               <div className="matched-students">
-              <label className="matched-students-label">תלמידים:</label>
+                <label className="matched-students-label">תלמידים:</label>
               </div>
               <div className="matched-students-text">
                 {matchedStudents.map((student, index) => (
