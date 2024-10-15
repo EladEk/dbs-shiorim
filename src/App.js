@@ -12,8 +12,9 @@ function App() {
   const [currentTime, setCurrentTime] = useState(""); 
   const [currentDay, setCurrentDay] = useState("");  
   const [firstActiveClassC, setFirstActiveClassC] = useState(""); // Store the first non-empty column C value
+  const [lastModified, setLastModified] = useState(null);
   const deBug =0;
-  const deBugDay = "חמישי";
+  const deBugDay = "ראשון";
   const deBugTime = "08:40";  
 
   useEffect(() => {
@@ -39,12 +40,25 @@ function App() {
   }, []);
 
   useEffect(() => {
-    updateCurrentTime();
+    const checkFileChange = () => {
+      fetch('/excel/database.xlsx', { method: 'HEAD' })
+         .then(response => {
+          const newLastModified = response.headers.get('Last-Modified');
+          if (lastModified && newLastModified !== lastModified) {
+            window.location.reload(); // Refresh the page if the file has changed
+          }
+          setLastModified(newLastModified); // Update the last modified timestamp
+        })
+        .catch(err => console.error("Error checking file changes:", err));
+    };
+    updateCurrentTime(); // Initial call to set current time when the component mounts
     const interval = setInterval(() => {
-      updateCurrentTime();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+      updateCurrentTime(); // Update the time every 10 seconds
+      checkFileChange();   // Check for file changes every 10 seconds
+    }, 10000); // 10-second interval
+    return () => clearInterval(interval); // Cleanup the interval on unmount
+  }, []); // Empty dependency array ensures this runs once when the component mounts
+
 
   const updateCurrentTime = () => {
     const now = new Date();
