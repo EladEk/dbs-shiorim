@@ -13,7 +13,7 @@ function App() {
   const [currentDay, setCurrentDay] = useState("");  
   const [firstActiveClassC, setFirstActiveClassC] = useState(""); 
   const [lastModified, setLastModified] = useState(null); 
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null); // For tracking errors during fetch
 
   const deBug = 0;
   const deBugDay = "ראשון";
@@ -38,9 +38,13 @@ function App() {
     return () => clearInterval(refreshInterval); // Cleanup on unmount
   }, []);
 
+  // Function to fetch data from the Excel file and update it if the file changed
   const fetchNewData = () => {
     fetch('/excel/database.xlsx?_=' + new Date().getTime())
       .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch Excel file. Status: ${response.status}`);
+        }
         const newLastModified = response.headers.get('Last-Modified');
         if (lastModified === null || newLastModified !== lastModified) {
           setLastModified(newLastModified);
@@ -51,16 +55,21 @@ function App() {
       })
       .then(arrayBuffer => {
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheet = workbook.Sheets['Main'];
+        const sheetName = 'Main'; // Ensure this matches your Excel sheet name
+        const sheet = workbook.Sheets[sheetName];
+
+        if (!sheet) {
+          throw new Error(`Sheet named "${sheetName}" not found.`);
+        }
+
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' });
+        console.log('Fetched Excel data:', jsonData); // Log to see if data is loaded correctly
         setData(jsonData);
         checkHighlightColumns(jsonData);
       })
       .catch(err => {
-        if (err.message !== "No update needed") {
-          console.error("Error fetching Excel file:", err);
-          setError("Failed to fetch the Excel file.");
-        }
+        console.error('Error fetching Excel file:', err);
+        setError("Failed to fetch the Excel file.");
       });
   };
 
@@ -87,6 +96,10 @@ function App() {
   const checkHighlightColumns = (data) => {
     const columnsToHighlight = [];
     const todayDateInHebrew = getTodayDayNameInHebrew();
+    if (!data || !data[0]) {
+      console.error('No data found to highlight columns.');
+      return;
+    }
     data[0].forEach((header, colIndex) => {
       if (header && header.trim() === todayDateInHebrew) {
         columnsToHighlight.push(colIndex);
