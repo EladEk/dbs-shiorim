@@ -19,10 +19,12 @@ function App() {
   const deBugDay = "ראשון";
   const deBugTime = "08:40";  
 
+  // Fetch the initial data and set the time immediately when the component loads
   useEffect(() => {
-    // Fetch the initial data
+    // Fetch data and update time immediately on component mount
     fetchNewData();
-    
+    updateCurrentTime();
+
     // Refresh the page every 4 hours
     const refreshInterval = setInterval(() => {
       window.location.reload();
@@ -58,9 +60,10 @@ function App() {
       });
   };
 
+  // Fetch the new data and update the current time every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      // Check for file changes every 10 seconds
+      // Check for file changes and update time every 10 seconds
       fetchNewData();
       updateCurrentTime();
     }, 10000); // 10 seconds
