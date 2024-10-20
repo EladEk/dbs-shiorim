@@ -13,17 +13,24 @@ function App() {
   const [currentDay, setCurrentDay] = useState("");  
   const [firstActiveClassC, setFirstActiveClassC] = useState(""); 
   const [lastModified, setLastModified] = useState(null); 
-  const [error, setError] = useState(null); // For tracking errors during fetch
+  const [error, setError] = useState(null); 
 
   const deBug = 0;
   const deBugDay = "ראשון";
   const deBugTime = "08:40";  
 
+  // Combined interval to handle time updates and file checks
   useEffect(() => {
-    // Fetch the initial data
-    fetchNewData();
-    
-    // Refresh the page every 4 hours
+    const combinedInterval = setInterval(() => {
+      updateCurrentTime();
+      checkFileChange();
+    }, 60000); // Set this to 60 seconds (or more) to reduce frequent checks
+
+    return () => clearInterval(combinedInterval); // Cleanup on unmount
+  }, [lastModified]);
+
+  // Refresh the page every 4 hours
+  useEffect(() => {
     const refreshInterval = setInterval(() => {
       window.location.reload();
     }, 4 * 60 * 60 * 1000); // 4 hours in milliseconds
@@ -31,7 +38,6 @@ function App() {
     return () => clearInterval(refreshInterval); // Cleanup on unmount
   }, []);
 
-  // Function to fetch data from the Excel file and update it if the file changed
   const fetchNewData = () => {
     fetch('/excel/database.xlsx?_=' + new Date().getTime())
       .then(response => {
@@ -58,17 +64,18 @@ function App() {
       });
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Check for file changes every 10 seconds
-      fetchNewData();
-      updateCurrentTime();
-    }, 10000); // 10 seconds
+  const checkFileChange = () => {
+    fetch('/excel/database.xlsx', { method: 'HEAD' })
+      .then(response => {
+        const newLastModified = response.headers.get('Last-Modified');
+        if (lastModified && newLastModified !== lastModified) {
+          fetchNewData(); // Fetch the new data if the file has changed
+        }
+      })
+      .catch(err => console.error("Error checking file changes:", err));
+  };
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [lastModified]);
-
-  // Update current time and day
+  // Update the current time and day
   const updateCurrentTime = () => {
     const now = new Date();
     const formattedTime = now.toTimeString().slice(0, 5); 
