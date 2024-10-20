@@ -18,10 +18,12 @@ function App() {
   const deBugDay = "חמישי";
   const deBugTime = "08:40";  
 
+  // Initial data fetch when component loads
   useEffect(() => {
     fetchNewData();
   }, []);
 
+  // Function to update current time and day
   const updateCurrentTime = () => {
     const now = new Date();
     const formattedTime = now.toTimeString().slice(0, 5); 
@@ -30,6 +32,7 @@ function App() {
     setCurrentDay(todayDayInHebrew);
   };
 
+  // Function to fetch new data from the Excel file
   const fetchNewData = () => {
     fetch(`/excel/database.xlsx?_=${new Date().getTime()}`)
       .then(response => response.arrayBuffer())
@@ -50,6 +53,7 @@ function App() {
       });
   };
 
+  // Function to check if the Excel file has changed
   const checkFileChange = () => {
     fetch(`/excel/database.xlsx?_=${new Date().getTime()}`, { method: 'HEAD' })
       .then(response => {
@@ -65,6 +69,7 @@ function App() {
       });
   };
 
+  // Function to check which columns should be highlighted
   const checkHighlightColumns = (data) => {
     if (!data || data.length === 0) return;
     const columnsToHighlight = [];
@@ -77,6 +82,7 @@ function App() {
     setHighlightColumns(columnsToHighlight);
   };
 
+  // Function to get today's day name in Hebrew
   const getTodayDayNameInHebrew = () => {
     const today = new Date();
     const options = { weekday: 'long' };
@@ -85,6 +91,7 @@ function App() {
       : deBugDay; 
   };
 
+  // Check if the current time is within a time range
   const isTimeInRange = (startTime, endTime) => {
     const timeToCheck = currentTime;
     if (!startTime || !endTime) return false;
@@ -93,6 +100,7 @@ function App() {
       : deBugTime >= startTime && deBugTime <= endTime;
   };
 
+  // Convert Excel time (numeric) to HH:MM format
   const convertExcelTimeToHHMM = (excelTime) => {
     if (typeof excelTime !== 'number') return '';
     const totalMinutes = Math.round(excelTime * 24 * 60);
@@ -101,6 +109,7 @@ function App() {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
 
+  // Periodically update the current time and check for file changes
   useEffect(() => {
     const interval = setInterval(() => {
       updateCurrentTime();
@@ -110,6 +119,7 @@ function App() {
     return () => clearInterval(interval);
   }, [lastModified]);
 
+  // Filter and update the current classes
   useEffect(() => {
     if (!data || data.length === 0) return;
     const filteredRows = [];
@@ -194,7 +204,7 @@ function App() {
                 {currentTime.slice(3, 5)}
               </div>
             </div>
-          {/* Proper conditional rendering without unused expressions */}
+          {/* Render the Classes component */}
           {currentClass.length > 0 ? (
             <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
           ) : null}
