@@ -139,17 +139,6 @@ function App() {
     setCurrentClass(filteredRows.length > 0 ? filteredRows : []);
   }, [data, highlightColumns, currentTime]);
 
-  // Function to render the Classes component conditionally
-  const renderClassesComponent = () => {
-    if (currentClass.length > 0) {
-      return (
-        <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
     <div className='app-font'>
       <Banner />
@@ -160,13 +149,12 @@ function App() {
             <thead>
               <tr>
                 <th className="time-column-header">זמנים</th>
-                {data.length > 0 && data[0]?.slice(3).map((header, colIndex) => (
-                  <th 
-                    key={colIndex + 3} 
-                    className={highlightColumns.includes(colIndex + 3) ? 'highlightHeader' : ''}>
+                {data.length > 0 &&
+                  data[0]?.slice(3).map((header, colIndex) => (
+                    <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlightHeader' : ''}>
                       {header}
-                  </th>
-                ))}
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody>
@@ -206,8 +194,11 @@ function App() {
                 {currentTime.slice(3, 5)}
               </div>
             </div>
-          {/* Render the Classes component explicitly */}
-          {renderClassesComponent()}
+          {/* Proper conditional rendering without unused expressions */}
+          {/* eslint-disable-next-line no-unused-expressions */}
+          {currentClass.length > 0 && (
+            <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
+          )}
         </div>
       </div>
     </div>
