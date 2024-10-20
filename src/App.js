@@ -15,9 +15,9 @@ function App() {
   const [lastModified, setLastModified] = useState(null); 
   const [error, setError] = useState(null); // For tracking errors during fetch
 
-  const deBug = 0;
+  const deBug = 1;
   const deBugDay = "ראשון";
-  const deBugTime = "08:40";  
+  const deBugTime = "11:40";  
 
   // Fetch the initial data and set the time immediately when the component loads
   useEffect(() => {
