@@ -15,7 +15,7 @@ function App() {
   const [lastModified, setLastModified] = useState(null); 
   const [error, setError] = useState(null); // For tracking errors during fetch
 
-  const deBug = 1;
+  const deBug = 0;
   const deBugDay = "ראשון";
   const deBugTime = "11:40";  
 
