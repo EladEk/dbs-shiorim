@@ -194,7 +194,7 @@ function App() {
                 {currentTime.slice(3, 5)}
               </div>
             </div>
-          {/* Render the Classes component explicitly */}
+          {/* Proper conditional rendering without unused expressions */}
           {currentClass.length > 0 ? (
             <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
           ) : null}
