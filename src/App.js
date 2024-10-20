@@ -13,53 +13,17 @@ function App() {
   const [currentDay, setCurrentDay] = useState("");  
   const [firstActiveClassC, setFirstActiveClassC] = useState(""); 
   const [lastModified, setLastModified] = useState(null); 
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null); // For tracking errors during fetch
 
   const deBug = 0;
   const deBugDay = "ראשון";
   const deBugTime = "08:40";  
 
-  // Separate interval for checking file changes
   useEffect(() => {
-    const checkFileChange = () => {
-      fetch('/excel/database.xlsx', { method: 'HEAD' })
-        .then(response => {
-          const newLastModified = response.headers.get('Last-Modified');
-          if (lastModified && newLastModified !== lastModified) {
-            fetchNewData(); // Fetch new data if the file has changed
-          }
-          setLastModified(newLastModified); // Update the last modified timestamp
-        })
-        .catch(err => console.error("Error checking file changes:", err));
-    };
-
-    const fileCheckInterval = setInterval(() => {
-      checkFileChange();
-    }, 10000); // Check for file changes every 10 seconds
-
-    return () => clearInterval(fileCheckInterval); // Cleanup interval on unmount
-  }, [lastModified]);
-
-  // Separate interval for updating the current time
-  useEffect(() => {
-    const updateCurrentTime = () => {
-      const now = new Date();
-      const formattedTime = now.toTimeString().slice(0, 5); 
-      const todayDayInHebrew = getTodayDayNameInHebrew();
-      setCurrentTime(formattedTime);
-      setCurrentDay(todayDayInHebrew);
-    };
-
-    updateCurrentTime(); // Initial call when the component mounts
-    const timeUpdateInterval = setInterval(() => {
-      updateCurrentTime(); // Update the time every 10 seconds
-    }, 10000);
-
-    return () => clearInterval(timeUpdateInterval); // Cleanup interval on unmount
-  }, []);
-
-  // Refresh the page every 4 hours
-  useEffect(() => {
+    // Fetch the initial data
+    fetchNewData();
+    
+    // Refresh the page every 4 hours
     const refreshInterval = setInterval(() => {
       window.location.reload();
     }, 4 * 60 * 60 * 1000); // 4 hours in milliseconds
@@ -67,28 +31,52 @@ function App() {
     return () => clearInterval(refreshInterval); // Cleanup on unmount
   }, []);
 
-  // Function to fetch data from the Excel file
+  // Function to fetch data from the Excel file and update it if the file changed
   const fetchNewData = () => {
     fetch('/excel/database.xlsx?_=' + new Date().getTime())
-      .then(response => response.arrayBuffer())
+      .then(response => {
+        const newLastModified = response.headers.get('Last-Modified');
+        if (lastModified === null || newLastModified !== lastModified) {
+          setLastModified(newLastModified);
+          return response.arrayBuffer();
+        } else {
+          throw new Error("No update needed");
+        }
+      })
       .then(arrayBuffer => {
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheet = workbook.Sheets['Main']; // Ensure this matches your Excel sheet name
-        if (!sheet) {
-          throw new Error(`Sheet named "Main" not found.`);
-        }
+        const sheet = workbook.Sheets['Main'];
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' });
-        console.log('Fetched Excel data:', jsonData); 
         setData(jsonData);
         checkHighlightColumns(jsonData);
       })
       .catch(err => {
-        console.error('Error fetching Excel file:', err);
-        setError("Failed to fetch the Excel file.");
+        if (err.message !== "No update needed") {
+          console.error("Error fetching Excel file:", err);
+          setError("Failed to fetch the Excel file.");
+        }
       });
   };
 
-  // Function to check for highlighted columns
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Check for file changes every 10 seconds
+      fetchNewData();
+      updateCurrentTime();
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [lastModified]);
+
+  // Update current time and day
+  const updateCurrentTime = () => {
+    const now = new Date();
+    const formattedTime = now.toTimeString().slice(0, 5); 
+    const todayDayInHebrew = getTodayDayNameInHebrew();
+    setCurrentTime(formattedTime);
+    setCurrentDay(todayDayInHebrew);
+  };
+
   const checkHighlightColumns = (data) => {
     const columnsToHighlight = [];
     const todayDateInHebrew = getTodayDayNameInHebrew();
@@ -100,7 +88,6 @@ function App() {
     setHighlightColumns(columnsToHighlight);
   };
 
-  // Get the current day in Hebrew
   const getTodayDayNameInHebrew = () => {
     const today = new Date();
     const options = { weekday: 'long' };
@@ -109,7 +96,6 @@ function App() {
       : deBugDay; 
   };
 
-  // Check if the current time is in range
   const isTimeInRange = (startTime, endTime) => {
     const timeToCheck = currentTime; 
     return deBug === 0 
@@ -117,7 +103,6 @@ function App() {
       : deBugTime >= startTime && deBugTime <= endTime;
   };
 
-  // Convert Excel time to HH:MM format
   const convertExcelTimeToHHMM = (excelTime) => {
     const totalMinutes = Math.round(excelTime * 24 * 60); 
     const hours = Math.floor(totalMinutes / 60);
@@ -125,7 +110,6 @@ function App() {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; 
   };
 
-  // Effect for processing data
   useEffect(() => {
     const filteredRows = [];
     let foundFirstActiveClassC = false;
