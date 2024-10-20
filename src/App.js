@@ -195,9 +195,9 @@ function App() {
               </div>
             </div>
           {/* Render the Classes component explicitly */}
-          {currentClass.length > 0 ? (
+          {currentClass.length > 0 && (
             <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
-          ) : null}
+          )}
         </div>
       </div>
     </div>
