@@ -199,10 +199,10 @@ function App() {
                 {currentTime.slice(3, 5)}
               </div>
             </div>
-          {/* Corrected the conditional rendering of Classes */}
-          {Array.isArray(currentClass) && currentClass.length > 0 && (
+          {/* Corrected to use if statement instead of && */}
+          {currentClass && Array.isArray(currentClass) && currentClass.length > 0 ? (
             <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
-          )}
+          ) : null}
         </div>
       </div>
     </div>
