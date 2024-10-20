@@ -1,75 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import './App.css'; 
-import Classes from './Classes'; 
+import './App.css'; // Assuming styles will be added here
+import Classes from './Classes'; // Import the Classes component
 import Banner from './Banner';
 import Newsbar from './Newsbar';
 
 function App() {
   const [data, setData] = useState([]);
   const [highlightColumns, setHighlightColumns] = useState([]);
-  const [currentClass, setCurrentClass] = useState([]); 
-  const [currentTime, setCurrentTime] = useState('');
-  const [currentDay, setCurrentDay] = useState('');  
-  const [firstActiveClassC, setFirstActiveClassC] = useState(''); 
-  const [lastModified, setLastModified] = useState(null); 
-  const [error, setError] = useState(null);
-  const deBug = 0;
-  const deBugDay = "חמישי";
+  const [currentClass, setCurrentClass] = useState([]); // Active classes to pass to Classes component
+  const [currentTime, setCurrentTime] = useState(""); 
+  const [currentDay, setCurrentDay] = useState("");  
+  const [firstActiveClassC, setFirstActiveClassC] = useState(""); // Store the first non-empty column C value
+  const [lastModified, setLastModified] = useState(null);
+  const deBug =0;
+  const deBugDay = "ראשון";
   const deBugTime = "08:40";  
 
   useEffect(() => {
-    fetchNewData();
+    // Refresh the page every 4 hours
+    const refreshInterval = setInterval(() => {
+      window.location.reload();
+    }, 4 * 60 * 60 * 1000); // 4 hours in milliseconds
+    return () => clearInterval(refreshInterval); // Cleanup on unmount
   }, []);
 
-  const updateCurrentTime = () => {
-    const now = new Date();
-    const formattedTime = now.toTimeString().slice(0, 5); 
-    const todayDayInHebrew = getTodayDayNameInHebrew();
-    setCurrentTime(formattedTime);
-    setCurrentDay(todayDayInHebrew);
-  };
-
-  const fetchNewData = () => {
-    fetch(`/excel/database.xlsx?_=${new Date().getTime()}`)
+  useEffect(() => {
+    fetch('/excel/database.xlsx')
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheet = workbook.Sheets['Main'];
-        if (!sheet) {
-          setError('Main sheet not found in Excel file');
-          return;
-        }
+        const sheetName = 'Main'; 
+        const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' });
         setData(jsonData);
         checkHighlightColumns(jsonData); 
       })
-      .catch(err => {
-        console.error('Error fetching Excel data:', err);
-        setError('Failed to fetch data');
-      });
-  };
+      .catch(err => console.error("Error fetching or reading Excel file:", err));
+  }, []);
 
-  const checkFileChange = () => {
-    fetch(`/excel/database.xlsx?_=${new Date().getTime()}`, { method: 'HEAD' })
-      .then(response => {
-        const newLastModified = response.headers.get('Last-Modified');
-        if (lastModified === null || newLastModified !== lastModified) {
-          fetchNewData(); 
-          setLastModified(newLastModified); 
-        }
-      })
-      .catch(err => {
-        console.error('Error checking file changes:', err);
-        setError('Failed to check file changes');
-      });
+  useEffect(() => {
+    const checkFileChange = () => {
+      fetch('/excel/database.xlsx', { method: 'HEAD' })
+         .then(response => {
+          const newLastModified = response.headers.get('Last-Modified');
+          if (lastModified && newLastModified !== lastModified) {
+            window.location.reload(); // Refresh the page if the file has changed
+          }
+          setLastModified(newLastModified); // Update the last modified timestamp
+        })
+        .catch(err => console.error("Error checking file changes:", err));
+    };
+    updateCurrentTime(); // Initial call to set current time when the component mounts
+    const interval = setInterval(() => {
+      updateCurrentTime(); // Update the time every 10 seconds
+      checkFileChange();   // Check for file changes every 10 seconds
+    }, 10000); // 10-second interval
+    return () => clearInterval(interval); // Cleanup the interval on unmount
+  }, []); // Empty dependency array ensures this runs once when the component mounts
+
+
+  const updateCurrentTime = () => {
+    const now = new Date();
+    const currentFormattedTime = now.toTimeString().slice(0, 5); 
+    const todayDayInHebrew = getTodayDayNameInHebrew(); 
+    setCurrentTime(currentFormattedTime); 
+    setCurrentDay(todayDayInHebrew); 
   };
 
   const checkHighlightColumns = (data) => {
-    if (!data || data.length === 0) return;
     const columnsToHighlight = [];
     const todayDateInHebrew = getTodayDayNameInHebrew();
-    data[0]?.forEach((header, colIndex) => {
+    data[0].forEach((header, colIndex) => {
       if (header && header.trim() === todayDateInHebrew) {
         columnsToHighlight.push(colIndex);
       }
@@ -80,40 +82,32 @@ function App() {
   const getTodayDayNameInHebrew = () => {
     const today = new Date();
     const options = { weekday: 'long' };
-    return deBug === 0 
-      ? new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '')
-      : deBugDay; 
+    if (deBug === 0) {
+      return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
+    } else {
+      return deBugDay; 
+    }
   };
 
   const isTimeInRange = (startTime, endTime) => {
-    const timeToCheck = currentTime;
-    if (!startTime || !endTime) return false;
-    return deBug === 0 
-      ? timeToCheck >= startTime && timeToCheck <= endTime
-      : deBugTime >= startTime && deBugTime <= endTime;
+    const timeToCheck = currentTime; 
+    if (deBug === 0) {
+      return timeToCheck >= startTime && timeToCheck <= endTime;
+    } else {
+      return deBugTime >= startTime && deBugTime <= endTime;
+    }
   };
 
   const convertExcelTimeToHHMM = (excelTime) => {
-    if (typeof excelTime !== 'number') return '';
-    const totalMinutes = Math.round(excelTime * 24 * 60);
+    const totalMinutes = Math.round(excelTime * 24 * 60); 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; 
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      updateCurrentTime();
-      checkFileChange();
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [lastModified]);
-
-  useEffect(() => {
-    if (!data || data.length === 0) return;
     const filteredRows = [];
-    let foundFirstActiveClassC = false;
+    let foundFirstActiveClassC = false; // Track if the first active column C has been found
 
     data.slice(1).forEach((row) => {
       const startTime = row[0] ? convertExcelTimeToHHMM(row[0]) : '';
@@ -123,20 +117,25 @@ function App() {
       highlightColumns.forEach((colIndex) => {
         if (row[colIndex] && isCurrentTimeInRange) {
           filteredRows.push({
-            className: row[colIndex]?.trim(),
+            className: row[colIndex].trim(),
             startTime: startTime,
             endTime: endTime
           });
         }
       });
 
+      // If the time is in range, column C (index 2) is not empty or '\u00A0', and we haven't found a match yet
       if (isCurrentTimeInRange && !foundFirstActiveClassC && row[2] && row[2].trim() !== '\u00A0') {
-        setFirstActiveClassC(row[2]?.trim());
-        foundFirstActiveClassC = true;
+        setFirstActiveClassC(row[2].trim()); // Save the first non-empty value from column C
+        foundFirstActiveClassC = true; // Mark that we've found the first value
       }
     });
 
-    setCurrentClass(filteredRows.length > 0 ? filteredRows : []);
+    if (filteredRows.length > 0) {
+      setCurrentClass(filteredRows);
+    } else {
+      setCurrentClass([]);
+    }
   }, [data, highlightColumns, currentTime]);
 
   return (
@@ -150,11 +149,13 @@ function App() {
               <tr>
                 <th className="time-column-header">זמנים</th>
                 {data.length > 0 &&
-                  data[0]?.slice(3).map((header, colIndex) => (
-                    <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlightHeader' : ''}>
-                      {header}
-                    </th>
-                  ))}
+                  data[0]
+                    .slice(3)
+                    .map((header, colIndex) => (
+                      <th key={colIndex + 3} className={highlightColumns.includes(colIndex + 3) ? 'highlightHeader' : ''}>
+                        {header}
+                      </th>
+                    ))}
               </tr>
             </thead>
             <tbody>
@@ -194,11 +195,7 @@ function App() {
                 {currentTime.slice(3, 5)}
               </div>
             </div>
-          {/* Proper conditional rendering without unused expressions */}
-          {/* eslint-disable-next-line no-unused-expressions */}
-          {currentClass.length > 0 && (
-            <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
-          )}
+          {Array.isArray(currentClass) && <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC}/>}
         </div>
       </div>
     </div>
