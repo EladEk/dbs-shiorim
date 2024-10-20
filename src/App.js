@@ -1,69 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import './App.css'; // Assuming styles will be added here
-import Classes from './Classes'; // Import the Classes component
+import './App.css'; 
+import Classes from './Classes'; 
 import Banner from './Banner';
 import Newsbar from './Newsbar';
 
 function App() {
   const [data, setData] = useState([]);
   const [highlightColumns, setHighlightColumns] = useState([]);
-  const [currentClass, setCurrentClass] = useState([]); // Active classes to pass to Classes component
+  const [currentClass, setCurrentClass] = useState([]); 
   const [currentTime, setCurrentTime] = useState('');
   const [currentDay, setCurrentDay] = useState('');  
-  const [firstActiveClassC, setFirstActiveClassC] = useState(''); // Store the first non-empty column C value
-  const [lastModified, setLastModified] = useState(null); // Track the Last-Modified timestamp for the file
+  const [firstActiveClassC, setFirstActiveClassC] = useState(''); 
+  const [lastModified, setLastModified] = useState(null); 
+  const [error, setError] = useState(null);
   const deBug = 0;
   const deBugDay = "חמישי";
   const deBugTime = "08:40";  
 
   useEffect(() => {
-    // Fetch initial data from the Excel file
     fetchNewData();
   }, []);
 
-  // Function to update the current time
   const updateCurrentTime = () => {
     const now = new Date();
-    const formattedTime = now.toTimeString().slice(0, 5); // e.g., '12:34'
+    const formattedTime = now.toTimeString().slice(0, 5); 
     const todayDayInHebrew = getTodayDayNameInHebrew();
     setCurrentTime(formattedTime);
     setCurrentDay(todayDayInHebrew);
   };
 
-  // Function to fetch the new data from the Excel file
   const fetchNewData = () => {
     fetch(`/excel/database.xlsx?_=${new Date().getTime()}`)
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        const sheet = workbook.Sheets['Main']; // Assuming you're using the 'Main' sheet
-        if (!sheet) return; // Avoid null pointer if sheet is missing
+        const sheet = workbook.Sheets['Main'];
+        if (!sheet) {
+          setError('Main sheet not found in Excel file');
+          return;
+        }
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '\u00A0' });
         setData(jsonData);
-        checkHighlightColumns(jsonData); // Update the highlighted columns
+        checkHighlightColumns(jsonData); 
       })
-      .catch(err => console.error('Error fetching Excel data:', err));
+      .catch(err => {
+        console.error('Error fetching Excel data:', err);
+        setError('Failed to fetch data');
+      });
   };
 
-  // Function to check if the Excel file has been modified
   const checkFileChange = () => {
     fetch(`/excel/database.xlsx?_=${new Date().getTime()}`, { method: 'HEAD' })
       .then(response => {
         const newLastModified = response.headers.get('Last-Modified');
-        
-        // If it's the first run or the file has changed, fetch the new data
         if (lastModified === null || newLastModified !== lastModified) {
-          fetchNewData(); // Fetch updated Excel data
-          setLastModified(newLastModified); // Update the last modified timestamp
+          fetchNewData(); 
+          setLastModified(newLastModified); 
         }
       })
-      .catch(err => console.error('Error checking file changes:', err));
+      .catch(err => {
+        console.error('Error checking file changes:', err);
+        setError('Failed to check file changes');
+      });
   };
 
-  // Function to check the highlighted columns
   const checkHighlightColumns = (data) => {
-    if (!data || data.length === 0) return; // Check if data is valid
+    if (!data || data.length === 0) return;
     const columnsToHighlight = [];
     const todayDateInHebrew = getTodayDayNameInHebrew();
     data[0]?.forEach((header, colIndex) => {
@@ -74,31 +77,24 @@ function App() {
     setHighlightColumns(columnsToHighlight);
   };
 
-  // Function to get today's day name in Hebrew
   const getTodayDayNameInHebrew = () => {
     const today = new Date();
     const options = { weekday: 'long' };
-    if (deBug === 0) {
-      return new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '');
-    } else {
-      return deBugDay; 
-    }
+    return deBug === 0 
+      ? new Intl.DateTimeFormat('he-IL', options).format(today).replace('יום ', '')
+      : deBugDay; 
   };
 
-  // Function to check if the current time is in range
   const isTimeInRange = (startTime, endTime) => {
     const timeToCheck = currentTime;
-    if (!startTime || !endTime) return false; // Safeguard against null values
-    if (deBug === 0) {
-      return timeToCheck >= startTime && timeToCheck <= endTime;
-    } else {
-      return deBugTime >= startTime && deBugTime <= endTime;
-    }
+    if (!startTime || !endTime) return false;
+    return deBug === 0 
+      ? timeToCheck >= startTime && timeToCheck <= endTime
+      : deBugTime >= startTime && deBugTime <= endTime;
   };
 
-  // Convert Excel time (numeric) to HH:MM format
   const convertExcelTimeToHHMM = (excelTime) => {
-    if (typeof excelTime !== 'number') return ''; // Check if excelTime is a valid number
+    if (typeof excelTime !== 'number') return '';
     const totalMinutes = Math.round(excelTime * 24 * 60);
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -106,17 +102,16 @@ function App() {
   };
 
   useEffect(() => {
-    // This runs every 10 seconds to update the current time and check for file changes
     const interval = setInterval(() => {
-      updateCurrentTime();  // Update the time every 10 seconds
-      checkFileChange();    // Check if the Excel file has changed
+      updateCurrentTime();
+      checkFileChange();
     }, 10000);
 
-    return () => clearInterval(interval); // Cleanup the interval on component unmount
-  }, [lastModified]); // Make sure this only re-runs when lastModified changes
+    return () => clearInterval(interval);
+  }, [lastModified]);
 
   useEffect(() => {
-    if (!data || data.length === 0) return; // Check if data is valid before processing
+    if (!data || data.length === 0) return;
     const filteredRows = [];
     let foundFirstActiveClassC = false;
 
@@ -199,8 +194,8 @@ function App() {
                 {currentTime.slice(3, 5)}
               </div>
             </div>
-          {/* Corrected to use if statement instead of && */}
-          {currentClass && Array.isArray(currentClass) && currentClass.length > 0 ? (
+          {/* Render the Classes component explicitly */}
+          {currentClass.length > 0 ? (
             <Classes currentClass={currentClass.map(item => item.className)} firstActiveClassC={firstActiveClassC} />
           ) : null}
         </div>
